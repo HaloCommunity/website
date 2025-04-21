@@ -206,16 +206,16 @@ const config: Config = {
   plugins: [
     'docusaurus-plugin-sass',
     'docusaurus-plugin-generate-llms-txt',
-    [
-      '@docusaurus/plugin-content-docs',
-      /** @type {DocsOptions} */
-      {
-        id: 'api',
-        path: 'api',
-        routeBasePath: 'api',
-        sidebarPath: './sidebars.ts',
-      }
-    ],
+    // [
+    //  '@docusaurus/plugin-content-docs',
+    //  /** @type {DocsOptions} */
+    //  {
+    //    id: 'api',
+    //    path: 'api',
+    //    routeBasePath: 'api',
+    //    sidebarPath: './sidebars.ts',
+    //  }
+    //],
     [
       'docusaurus-plugin-openapi-docs',
       {
