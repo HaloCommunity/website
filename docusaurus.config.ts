@@ -2,6 +2,7 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import type {Options as DocsOptions} from '@docusaurus/plugin-content-docs';
 import type {Options as PageOptions} from '@docusaurus/plugin-content-pages';
+import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
 // Import the Docusaurus version.
 import { DOCUSAURUS_VERSION } from '@docusaurus/utils'
 // Setup our Prism themes
@@ -204,7 +205,32 @@ const config: Config = {
   } satisfies Preset.ThemeConfig,
   plugins: [
     'docusaurus-plugin-sass',
-    "docusaurus-plugin-generate-llms-txt",
+    'docusaurus-plugin-generate-llms-txt',
+    [
+      '@docusaurus/plugin-content-docs',
+      /** @type {DocsOptions} */
+      {
+        id: 'api',
+        path: 'api',
+        routeBasePath: 'api',
+        sidebarPath: './sidebars.ts',
+      }
+    ],
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'api',
+        docsPluginId: 'api',
+        config: {
+          api: {
+            specPath: './src/data/HaloAPI.json',
+            outputDir: 'api',
+            showSchemas: true,
+            
+          },
+        }, 
+      }
+    ]
   ],
   themes: [
     [
@@ -220,6 +246,7 @@ const config: Config = {
         highlightSearchTermsOnTargetPage: true,
       }),
     ],
+    'docusaurus-theme-openapi-docs',
   ],
   headTags: [
     {
@@ -352,7 +379,10 @@ const config: Config = {
       defer: true,
       'data-domain': 'halopsa.community',
     }
-  ]
+  ],
+  future: {
+    experimental_faster: true,
+  },
 }
 
 export default config;
