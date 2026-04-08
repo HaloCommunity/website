@@ -64,7 +64,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.sha || github.ref }}
           fetch-depth: 0
@@ -76,7 +76,7 @@ jobs:
         run: corepack enable
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
           cache: 'yarn'
@@ -89,24 +89,23 @@ jobs:
 
       - name: Publish to Cloudflare Pages
         id: cloudflare-pages-deploy
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v3
         with:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          projectName: halocommunitywebsite
-          directory: build
+          command: 'pages deploy build --project-name=halocommunitywebsite'
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create commit comment
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        uses: peter-evans/commit-comment@v2
+        uses: peter-evans/commit-comment@v4
         with:
           body: |
             ### ⚡ Successfully deployed to Cloudflare Pages!
             | <span aria-hidden="true">🔨</span> **Latest commit** | ${{ github.event.pull_request.head.sha || github.sha }} |
             | <span aria-hidden="true">🔍</span> **Latest deploy log** | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
-            | <span aria-hidden="true">😎</span> **Deploy preview URL** | [${{ steps.cloudflare-pages-deploy.outputs.url }}](${{ steps.cloudflare-pages-deploy.outputs.url }}) |
-            | <span aria-hidden="true">🌳</span> **Environment** | ${{ steps.cloudflare-pages-deploy.outputs.environment }} |
+            | <span aria-hidden="true">😎</span> **Deploy preview URL** | [${{ steps.cloudflare-pages-deploy.outputs.deployment-url }}](${{ steps.cloudflare-pages-deploy.outputs.deployment-url }}) |
+            | <span aria-hidden="true">🌳</span> **Environment** | ${{ steps.cloudflare-pages-deploy.outputs.pages-environment }} |
 
       - name: Create PR comment
         if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
@@ -116,12 +115,12 @@ jobs:
             ### ⚡ Successfully deployed to Cloudflare Pages!
             | <span aria-hidden="true">🔨</span> **Latest commit** | ${{ github.event.pull_request.head.sha || github.sha }} |
             | <span aria-hidden="true">🔍</span> **Latest deploy log** | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
-            | <span aria-hidden="true">😎</span> **Deploy preview URL** | [${{ steps.cloudflare-pages-deploy.outputs.url }}](${{ steps.cloudflare-pages-deploy.outputs.url }}) |
-            | <span aria-hidden="true">🌳</span> **Environment** | ${{ steps.cloudflare-pages-deploy.outputs.environment }} |
+            | <span aria-hidden="true">😎</span> **Deploy preview URL** | [${{ steps.cloudflare-pages-deploy.outputs.deployment-url }}](${{ steps.cloudflare-pages-deploy.outputs.deployment-url }}) |
+            | <span aria-hidden="true">🌳</span> **Environment** | ${{ steps.cloudflare-pages-deploy.outputs.pages-environment }} |
 
       - name: Remove label
         if: ${{ github.event_name == 'pull_request_target' && contains(github.event.label.name, '🚀request-deploy') }}
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
