@@ -50,7 +50,6 @@ const config: Config = {
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
   trailingSlash: true,
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -363,9 +362,17 @@ const config: Config = {
       'data-domain': 'halopsa.community',
     }
   ],
+  markdown: {
+    hooks: {
+      onBrokenMarkdownImages: 'warn',
+      onBrokenMarkdownLinks: 'throw',
+    }
+  },
   future: {
     faster: true,
-    
+    v4: {
+      removeLegacyPostBuildHeadAttribute: true,
+    }
   },
 }
 
