@@ -96,6 +96,49 @@ jobs:
           command: 'pages deploy build --project-name=halocommunitywebsite'
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Resolve deployment URLs
+        id: deployment-urls
+        shell: bash
+        env:
+          DEPLOYMENT_URL: ${{ steps.cloudflare-pages-deploy.outputs.deployment-url }}
+          ALIAS_URL: ${{ steps.cloudflare-pages-deploy.outputs.pages-deployment-alias-url }}
+        run: |
+          preview_url="$ALIAS_URL"
+          if [ -z "$preview_url" ] || [ "$preview_url" = "undefined" ]; then
+            preview_url="$DEPLOYMENT_URL"
+          fi
+
+          echo "production_url=https://halopsa.communit" >> "$GITHUB_OUTPUT"
+          echo "deployment_url=$DEPLOYMENT_URL" >> "$GITHUB_OUTPUT"
+          echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
+
+      - name: Write deployment summary
+        shell: bash
+        env:
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          ENVIRONMENT: ${{ steps.cloudflare-pages-deploy.outputs.pages-environment }}
+          PRODUCTION_URL: ${{ steps.deployment-urls.outputs.production_url }}
+          DEPLOYMENT_URL: ${{ steps.deployment-urls.outputs.deployment_url }}
+          PREVIEW_URL: ${{ steps.deployment-urls.outputs.preview_url }}
+        run: |
+          {
+            echo "## Deploying with Cloudflare Pages"
+            echo
+            echo "| Name | Result |"
+            echo "| --- | --- |"
+            echo "| Last commit | \\`$COMMIT_SHA\\` |"
+            echo "| Deploy log | [View run]($RUN_URL) |"
+            if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+              echo "| Production URL | [$PRODUCTION_URL]($PRODUCTION_URL) |"
+              echo "| Deployment URL | [$DEPLOYMENT_URL]($DEPLOYMENT_URL) |"
+            else
+              echo "| Preview URL | [$PREVIEW_URL]($PREVIEW_URL) |"
+              echo "| Deployment URL | [$DEPLOYMENT_URL]($DEPLOYMENT_URL) |"
+            fi
+            echo "| Environment | $ENVIRONMENT |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Create commit comment
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         uses: peter-evans/commit-comment@v4
@@ -107,7 +150,7 @@ jobs:
             | --- | --- |
             | <span aria-hidden="true">🔨</span> **Latest commit** | ${{ github.event.pull_request.head.sha || github.sha }} |
             | <span aria-hidden="true">🔍</span> **Latest deploy log** | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
-            | <span aria-hidden="true">😎</span> **Production URL** | [https://docs.homotechsual.dev](https://docs.homotechsual.dev) |
+            | <span aria-hidden="true">😎</span> **Production URL** | [https://halopsa.community](https://halopsa.community) |
             | <span aria-hidden="true">🔗</span> **Deployment URL** | [${{ steps.cloudflare-pages-deploy.outputs.deployment-url }}](${{ steps.cloudflare-pages-deploy.outputs.deployment-url }}) |
             | <span aria-hidden="true">🌳</span> **Environment** | ${{ steps.cloudflare-pages-deploy.outputs.pages-environment }} |
 
