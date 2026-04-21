@@ -102,9 +102,13 @@ jobs:
         with:
           body: |
             ### ⚡ Successfully deployed to Cloudflare Pages!
+            
+            | Item | Value |
+            | --- | --- |
             | <span aria-hidden="true">🔨</span> **Latest commit** | ${{ github.event.pull_request.head.sha || github.sha }} |
             | <span aria-hidden="true">🔍</span> **Latest deploy log** | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
-            | <span aria-hidden="true">😎</span> **Deploy preview URL** | [${{ steps.cloudflare-pages-deploy.outputs.deployment-url }}](${{ steps.cloudflare-pages-deploy.outputs.deployment-url }}) |
+            | <span aria-hidden="true">😎</span> **Production URL** | [https://docs.homotechsual.dev](https://docs.homotechsual.dev) |
+            | <span aria-hidden="true">🔗</span> **Deployment URL** | [${{ steps.cloudflare-pages-deploy.outputs.deployment-url }}](${{ steps.cloudflare-pages-deploy.outputs.deployment-url }}) |
             | <span aria-hidden="true">🌳</span> **Environment** | ${{ steps.cloudflare-pages-deploy.outputs.pages-environment }} |
 
       - name: Create PR comment
@@ -113,9 +117,12 @@ jobs:
         with:
           message: |
             ### ⚡ Successfully deployed to Cloudflare Pages!
+            
+            | Item | Value |
+            | --- | --- |
             | <span aria-hidden="true">🔨</span> **Latest commit** | ${{ github.event.pull_request.head.sha || github.sha }} |
             | <span aria-hidden="true">🔍</span> **Latest deploy log** | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
-            | <span aria-hidden="true">😎</span> **Deploy preview URL** | [${{ steps.cloudflare-pages-deploy.outputs.deployment-url }}](${{ steps.cloudflare-pages-deploy.outputs.deployment-url }}) |
+            | <span aria-hidden="true">😎</span> **Preview URL** | [${{ steps.cloudflare-pages-deploy.outputs.pages-deployment-alias-url || steps.cloudflare-pages-deploy.outputs.deployment-url }}](${{ steps.cloudflare-pages-deploy.outputs.pages-deployment-alias-url || steps.cloudflare-pages-deploy.outputs.deployment-url }}) |
             | <span aria-hidden="true">🌳</span> **Environment** | ${{ steps.cloudflare-pages-deploy.outputs.pages-environment }} |
 
       - name: Remove label
