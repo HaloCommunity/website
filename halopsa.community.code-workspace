@@ -3,5 +3,15 @@
 		{
 			"path": "."
 		}
-	]
+	],
+	"settings": {
+		"codeQL.githubDatabase.download": "never",
+		"cSpell.words": [
+			"easyops",
+			"halocommunitywebsite",
+			"labeled",
+			"llms",
+			"mshick"
+		]
+	}
 }
