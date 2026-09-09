@@ -7,6 +7,7 @@ on:
     paths:
       - workers/showcase-submission/**
       - .github/workflows/deploy-showcase-worker.yml
+      - .github/workflows/publish.yml
 
 permissions:
   contents: read
