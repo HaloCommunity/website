@@ -13,6 +13,20 @@ export type ShowcaseItem = {
   license: string;
 };
 
+export const ALLOWED_LICENSES = [
+  'MIT',
+  'Apache-2.0',
+  'AGPL-3.0',
+  'GPL-3.0',
+  'LGPL-3.0',
+  'BSD-3-Clause',
+  'MPL-2.0',
+  'EPL-2.0',
+  'Unlicense',
+  'Proprietary',
+  'Other',
+] as const;
+
 export function sanitizeSingleLine(value: string): string {
   return value.replace(/[\r\n]+/g, ' ').trim();
 }
@@ -61,6 +75,10 @@ export function validateItem(item: ShowcaseItem): string | null {
 
   if (!item.license?.trim()) {
     return 'License is required.';
+  }
+
+  if (!ALLOWED_LICENSES.includes(item.license as (typeof ALLOWED_LICENSES)[number])) {
+    return 'Invalid license value.';
   }
 
   return null;

@@ -54,6 +54,11 @@ describe('validateItem', () => {
     const item = {...validItem, offerType: 'bad' as ShowcaseItem['offerType']};
     expect(validateItem(item)).toContain('Invalid offer type');
   });
+
+  it('rejects bad license value', () => {
+    const item = {...validItem, license: 'GPLv2'};
+    expect(validateItem(item)).toContain('Invalid license value');
+  });
 });
 
 describe('toYaml', () => {

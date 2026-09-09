@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import Layout from '@theme/Layout';
 import Translate, {translate} from '@docusaurus/Translate';
 import clsx from 'clsx';
@@ -67,12 +67,37 @@ const REQUIRED_FIELDS: (keyof FormState)[] = [
 const LICENSE_OPTIONS = [
   'MIT',
   'Apache-2.0',
+  'AGPL-3.0',
   'GPL-3.0',
+  'LGPL-3.0',
   'BSD-3-Clause',
   'MPL-2.0',
+  'EPL-2.0',
+  'Unlicense',
   'Proprietary',
   'Other',
 ] as const;
+
+type TurnstileWidgetId = string | number;
+
+type TurnstileApi = {
+  render: (
+    container: HTMLElement,
+    options: {
+      sitekey: string;
+      theme?: 'auto' | 'light' | 'dark';
+      callback?: (token: string) => void;
+      'expired-callback'?: () => void;
+      'error-callback'?: () => void;
+    },
+  ) => TurnstileWidgetId;
+  reset: (widgetId?: TurnstileWidgetId) => void;
+  remove?: (widgetId: TurnstileWidgetId) => void;
+};
+
+type TurnstileWindow = Window & {
+  turnstile?: TurnstileApi;
+};
 
 function fieldHasValue(field: keyof FormState, value: FormState): boolean {
   if (field === 'offerType' || field === 'license') {
@@ -180,12 +205,94 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
   const [apiMessage, setApiMessage] = useState<string | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
   const [turnstileError, setTurnstileError] = useState<string | null>(null);
+  const [turnstileLoadError, setTurnstileLoadError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState('');
   const [copied, setCopied] = useState(false);
+  const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
+  const turnstileWidgetIdRef = useRef<TurnstileWidgetId | null>(null);
 
   const generatedId = useMemo(() => buildGeneratedId(form.author, form.name), [form.author, form.name]);
   const previewItem = useMemo(() => buildPreviewItem(form, generatedId), [form, generatedId]);
   const yaml = useMemo(() => toYamlString(toYamlPayload(form, generatedId)), [form, generatedId]);
   const valid = generatedId.length > 0 && REQUIRED_FIELDS.every((field) => fieldHasValue(field, form));
+
+  useEffect(() => {
+    if (!turnstileSiteKey) {
+      return;
+    }
+
+    let cancelled = false;
+    let tries = 0;
+    const maxTries = 40;
+
+    const renderWidget = (): boolean => {
+      const container = turnstileContainerRef.current;
+      const api = (window as TurnstileWindow).turnstile;
+
+      if (!container || !api || turnstileWidgetIdRef.current !== null) {
+        return Boolean(container && api);
+      }
+
+      container.innerHTML = '';
+      turnstileWidgetIdRef.current = api.render(container, {
+        sitekey: turnstileSiteKey,
+        theme: 'auto',
+        callback: (token) => {
+          setTurnstileToken(token);
+          setTurnstileError(null);
+          setTurnstileLoadError(null);
+        },
+        'expired-callback': () => {
+          setTurnstileToken('');
+        },
+        'error-callback': () => {
+          setTurnstileToken('');
+          setTurnstileLoadError('Security check could not load. Refresh the page and try again.');
+        },
+      });
+
+      return true;
+    };
+
+    if (renderWidget()) {
+      return () => {
+        cancelled = true;
+        const api = (window as TurnstileWindow).turnstile;
+        if (api && turnstileWidgetIdRef.current !== null) {
+          api.remove?.(turnstileWidgetIdRef.current);
+          turnstileWidgetIdRef.current = null;
+        }
+      };
+    }
+
+    const interval = window.setInterval(() => {
+      if (cancelled) {
+        window.clearInterval(interval);
+        return;
+      }
+
+      tries += 1;
+      if (renderWidget()) {
+        window.clearInterval(interval);
+        return;
+      }
+
+      if (tries >= maxTries) {
+        window.clearInterval(interval);
+        setTurnstileLoadError('Security check could not load. Refresh the page and try again.');
+      }
+    }, 500);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+      const api = (window as TurnstileWindow).turnstile;
+      if (api && turnstileWidgetIdRef.current !== null) {
+        api.remove?.(turnstileWidgetIdRef.current);
+        turnstileWidgetIdRef.current = null;
+      }
+    };
+  }, [turnstileSiteKey]);
 
   function setField<K extends keyof FormState>(field: K, value: FormState[K]) {
     setForm((prev) => ({...prev, [field]: value}));
@@ -223,12 +330,9 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
     setApiError(null);
     setApiMessage(null);
     setTurnstileError(null);
+    setTurnstileLoadError(null);
 
     try {
-      const turnstileToken = turnstileSiteKey
-        ? (document.querySelector('input[name="cf-turnstile-response"]') as HTMLInputElement | null)?.value ?? ''
-        : '';
-
       if (turnstileSiteKey && turnstileToken.length === 0) {
         setTurnstileError('Please complete the security check before submitting.');
         setSubmitting(false);
@@ -262,10 +366,15 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
       const links = [payload.pullRequestUrl, payload.issueUrl].filter(Boolean).join(' | ');
       setApiMessage(payload.message ? `${payload.message}${links ? ` ${links}` : ''}` : 'Submission created.');
       setForm(emptyForm);
+      setTurnstileToken('');
       setAttempted(false);
 
-      const turnstile = (window as unknown as {turnstile?: {reset: () => void}}).turnstile;
-      turnstile?.reset();
+      const turnstile = (window as TurnstileWindow).turnstile;
+      if (turnstileWidgetIdRef.current !== null) {
+        turnstile?.reset(turnstileWidgetIdRef.current);
+      } else {
+        turnstile?.reset();
+      }
     } catch {
       setApiError('Unable to reach the submission service. Please try again later.');
     } finally {
@@ -451,7 +560,8 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
 
             {turnstileSiteKey && (
               <div className={styles.turnstileWrap}>
-                <div className="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="auto" />
+                <div ref={turnstileContainerRef} />
+                {turnstileLoadError && <p className={styles.errorMsg}>{turnstileLoadError}</p>}
               </div>
             )}
 
