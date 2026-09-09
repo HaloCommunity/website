@@ -1,0 +1,18 @@
+id: homotechsual.dotmarc
+name: DotMarc
+description: dotMARC is a self-hosted DMARC aggregate report analyser that lets you monitor authentication posture across many domains from a single dashboard.
+details: |
+  dotMARC is designed for teams managing DMARC at scale. It supports centralized report ingestion from a single mailbox, then provides pass/fail visibility, source breakdowns, and DNS record status across domains, with filtering by Group and Tag. Access control is fine-grained, including Group-scoped Viewer access for external clients, and Admin/Viewer presets out of the box.
+  It is self-hosted and open source: deploy via Docker Compose or the provided Bicep template to Azure Container Apps, with PostgreSQL backing storage so aggregate report data stays in your environment.
+website: https://dotmarc.app/
+source: https://github.com/homotechsual/dotmarc
+author: homotechsual
+preview: null
+tags:
+  - featured
+  - integration
+status: beta
+offerType: open-source
+license: AGPL-3.0
+npmPackages: []
+minimumVersion: null
