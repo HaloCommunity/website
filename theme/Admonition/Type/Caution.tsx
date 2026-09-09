@@ -19,7 +19,7 @@ const defaultProps = {
   ),
 };
 
-export default function AdmonitionTypeCaution(props: Props): JSX.Element {
+export default function AdmonitionTypeCaution(props: Props): React.JSX.Element {
   return (
     <AdmonitionLayout
       {...defaultProps}

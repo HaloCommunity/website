@@ -43,6 +43,8 @@ const commonDocsPluginConfig = {
 }
 
 const showcaseSchemaPath = join(dirname(fileURLToPath(import.meta.url)), 'showcase', 'schema.json');
+const showcaseSubmissionApiUrl = process.env.SHOWCASE_SUBMISSION_API_URL?.trim() || '';
+const showcaseTurnstileSiteKey = process.env.SHOWCASE_TURNSTILE_SITE_KEY?.trim() || '1x00000000000000000000AA';
 
 type CommunityShowcasePluginOptions = ShowcasePluginOptions & {
   submissionApiUrl?: string;
@@ -69,7 +71,7 @@ const config: Config = {
     locales: ['en'],
   },
   customFields: {
-    showcaseSubmissionApiUrl: 'https://example-submission-worker.workers.dev/submit',
+    showcaseSubmissionApiUrl,
   },
   presets: [
     [
@@ -239,8 +241,8 @@ const config: Config = {
         submitLabel: 'Share an item',
         submitFormPath: 'submit',
         submitGithubRepo: 'HaloCommunity/website',
-        submissionApiUrl: '/api/showcase/submit',
-        turnstileSiteKey: '1x00000000000000000000AA',
+        submissionApiUrl: showcaseSubmissionApiUrl || undefined,
+        turnstileSiteKey: showcaseTurnstileSiteKey,
         favouriteTag: 'featured',
         tags: {
           featured: {

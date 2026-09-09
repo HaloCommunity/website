@@ -99,6 +99,9 @@ type TurnstileWindow = Window & {
   turnstile?: TurnstileApi;
 };
 
+const TURNSTILE_SCRIPT_ID = 'cf-turnstile-script';
+const TURNSTILE_SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+
 function fieldHasValue(field: keyof FormState, value: FormState): boolean {
   if (field === 'offerType' || field === 'license') {
     return true;
@@ -224,6 +227,7 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
     let cancelled = false;
     let tries = 0;
     const maxTries = 40;
+    let scriptNode: HTMLScriptElement | null = null;
 
     const renderWidget = (): boolean => {
       const container = turnstileContainerRef.current;
@@ -254,6 +258,32 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
       return true;
     };
 
+    const ensureTurnstileScript = () => {
+      if ((window as TurnstileWindow).turnstile) {
+        return;
+      }
+
+      const existing =
+        (document.getElementById(TURNSTILE_SCRIPT_ID) as HTMLScriptElement | null) ??
+        (document.querySelector('script[src*="challenges.cloudflare.com/turnstile/v0/api.js"]') as
+          | HTMLScriptElement
+          | null);
+      if (existing) {
+        scriptNode = existing;
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.id = TURNSTILE_SCRIPT_ID;
+      script.src = TURNSTILE_SCRIPT_SRC;
+      script.async = true;
+      script.defer = true;
+      scriptNode = script;
+      document.head.appendChild(script);
+    };
+
+    ensureTurnstileScript();
+
     if (renderWidget()) {
       return () => {
         cancelled = true;
@@ -279,7 +309,9 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
 
       if (tries >= maxTries) {
         window.clearInterval(interval);
-        setTurnstileLoadError('Security check could not load. Refresh the page and try again.');
+        setTurnstileLoadError(
+          'Security check could not load. Verify Turnstile script loading and site key domain settings.',
+        );
       }
     }, 500);
 
@@ -352,19 +384,31 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
         }),
       });
 
-      const payload = (await response.json()) as {
+      let payload: {
         message?: string;
         issueUrl?: string;
         pullRequestUrl?: string;
-      };
+      } | null = null;
+
+      const contentType = response.headers.get('content-type') ?? '';
+      if (contentType.includes('application/json')) {
+        payload = (await response.json()) as {
+          message?: string;
+          issueUrl?: string;
+          pullRequestUrl?: string;
+        };
+      }
 
       if (!response.ok) {
-        setApiError(payload.message ?? 'Submission failed. Please try again later.');
+        setApiError(
+          payload?.message ??
+            `Submission service returned ${response.status}. Check SHOWCASE_SUBMISSION_API_URL and Worker route.`,
+        );
         return;
       }
 
-      const links = [payload.pullRequestUrl, payload.issueUrl].filter(Boolean).join(' | ');
-      setApiMessage(payload.message ? `${payload.message}${links ? ` ${links}` : ''}` : 'Submission created.');
+      const links = [payload?.pullRequestUrl, payload?.issueUrl].filter(Boolean).join(' | ');
+      setApiMessage(payload?.message ? `${payload.message}${links ? ` ${links}` : ''}` : 'Submission created.');
       setForm(emptyForm);
       setTurnstileToken('');
       setAttempted(false);
@@ -375,8 +419,9 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
       } else {
         turnstile?.reset();
       }
-    } catch {
-      setApiError('Unable to reach the submission service. Please try again later.');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown network error.';
+      setApiError(`Unable to reach the submission service. ${message}`);
     } finally {
       setSubmitting(false);
     }

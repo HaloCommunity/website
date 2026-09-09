@@ -14,7 +14,7 @@ function getAdmonitionTypeComponent(type: string): ComponentType<Props> {
   return AdmonitionTypes.info!;
 }
 
-export default function Admonition(unprocessedProps: Props): JSX.Element {
+export default function Admonition(unprocessedProps: Props): React.JSX.Element {
   const props = processAdmonitionProps(unprocessedProps);
   const AdmonitionTypeComponent = getAdmonitionTypeComponent(props.type);
   return <AdmonitionTypeComponent {...props} />;

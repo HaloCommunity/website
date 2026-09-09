@@ -81,6 +81,9 @@ jobs:
         run: corepack yarn install --check-cache
 
       - name: Build website
+        env:
+          SHOWCASE_SUBMISSION_API_URL: ${{ secrets.SHOWCASE_SUBMISSION_API_URL }}
+          SHOWCASE_TURNSTILE_SITE_KEY: ${{ secrets.SHOWCASE_TURNSTILE_SITE_KEY }}
         run: corepack yarn build
 
       - name: Publish to Cloudflare Pages

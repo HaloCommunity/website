@@ -56,6 +56,15 @@ Use repository secrets with non-`GITHUB_` names:
 
 The workflow injects worker secrets with `wrangler secret put`, then deploys.
 
+## Site build configuration
+
+The Docusaurus build reads these environment variables:
+
+* `SHOWCASE_SUBMISSION_API_URL` set to your deployed Worker URL, for example `https://<your-worker-domain>/submit`.
+* `SHOWCASE_TURNSTILE_SITE_KEY` set to your Cloudflare Turnstile site key.
+
+For GitHub Actions publish builds, add both as repository secrets.
+
 ## Wire to site
 
 In [docusaurus.config.ts](../../docusaurus.config.ts), set the showcase plugin option:

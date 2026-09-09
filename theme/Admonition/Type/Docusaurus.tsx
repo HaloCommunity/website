@@ -19,7 +19,7 @@ const defaultProps = {
   ),
 };
 
-export default function AdmonitionTypeDocusaurus(props: Props): JSX.Element {
+export default function AdmonitionTypeDocusaurus(props: Props): React.JSX.Element {
   return (
     <AdmonitionLayout
       {...defaultProps}

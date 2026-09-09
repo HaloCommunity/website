@@ -19,7 +19,7 @@ const defaultProps = {
   ),
 };
 
-export default function AdmonitionTypeDiscord(props: Props): JSX.Element {
+export default function AdmonitionTypeDiscord(props: Props): React.JSX.Element {
   return (
     <AdmonitionLayout
       {...defaultProps}

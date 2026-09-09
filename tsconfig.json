@@ -4,7 +4,8 @@
   "compilerOptions": {
     "strict": true,
     "ignoreDeprecations": "6.0",
+    "types": ["@docusaurus/module-type-aliases"],
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": [".docusaurus", "build"]
+  "exclude": [".docusaurus", "build", "workers"]
 }
