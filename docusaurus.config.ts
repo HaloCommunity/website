@@ -2,6 +2,9 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import type {Options as DocsOptions} from '@docusaurus/plugin-content-docs';
 import type {Options as PageOptions} from '@docusaurus/plugin-content-pages';
+import type {PluginOptions as ShowcasePluginOptions} from '@homotechsual/docusaurus-plugin-showcase';
+import {dirname, join} from 'node:path';
+import {fileURLToPath} from 'node:url';
 // Import the Docusaurus version.
 import { DOCUSAURUS_VERSION } from '@docusaurus/utils'
 // Setup our Prism themes
@@ -38,6 +41,13 @@ const commonDocsPluginConfig = {
   sidebarCollapsed: true,
   ...admonitionsConfig,
 }
+
+const showcaseSchemaPath = join(dirname(fileURLToPath(import.meta.url)), 'showcase', 'schema.json');
+
+type CommunityShowcasePluginOptions = ShowcasePluginOptions & {
+  submissionApiUrl?: string;
+  turnstileSiteKey?: string;
+};
 /** @type {import('@docusaurus/types').Config} */
 const config: Config = {
   title: 'HaloPSA Community',
@@ -57,6 +67,9 @@ const config: Config = {
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
+  },
+  customFields: {
+    showcaseSubmissionApiUrl: 'https://example-submission-worker.workers.dev/submit',
   },
   presets: [
     [
@@ -105,6 +118,11 @@ const config: Config = {
           label: 'Introduction',
         },
         {
+          to: '/showcase',
+          label: 'Showcase',
+          position: 'left',
+        },
+        {
           to: 'https://github.com/sponsors/homotechsual/',
           label: 'Sponsor',
           position: 'right',
@@ -143,6 +161,10 @@ const config: Config = {
             {
               label: 'Introduction',
               to: '/docs/',
+            },
+            {
+              label: 'Community Showcase',
+              to: '/showcase',
             },
           ],
         },
@@ -204,6 +226,73 @@ const config: Config = {
   plugins: [
     'docusaurus-plugin-sass',
     'docusaurus-plugin-generate-llms-txt',
+    [
+      '@homotechsual/docusaurus-plugin-showcase',
+      {
+        id: 'community-showcase',
+        dataDir: 'showcase',
+        schemaPath: showcaseSchemaPath,
+        schemaUrl: 'https://halopsa.community/showcase/schema.json',
+        routeBasePath: 'showcase',
+        pageTitle: 'Community Integrations, Scripts and Tools',
+        pageDescription: 'Share and discover Halo community-built integrations, scripts, and utilities.',
+        submitLabel: 'Share an item',
+        submitFormPath: 'submit',
+        submitGithubRepo: 'HaloCommunity/website',
+        submissionApiUrl: '/api/showcase/submit',
+        turnstileSiteKey: '1x00000000000000000000AA',
+        favouriteTag: 'featured',
+        tags: {
+          featured: {
+            label: 'Featured',
+            description: 'High-impact tools recommended by the community.',
+            color: '#e9669e',
+            icon: 'heart',
+          },
+          integration: {
+            label: 'Integration',
+            description: 'Connect Halo with third-party platforms and services.',
+            color: '#39ca30',
+            icon: 'plus-square',
+          },
+          script: {
+            label: 'Script',
+            description: 'Automation scripts, helpers, and operational tooling.',
+            color: '#3b82f6',
+          },
+          reporting: {
+            label: 'Reporting',
+            description: 'Analytics, dashboards, and reporting-focused resources.',
+            color: '#e6af2e',
+          },
+          utility: {
+            label: 'Utility',
+            description: 'General-purpose community tools and quality-of-life helpers.',
+            color: '#0ea5a4',
+          },
+        },
+        statuses: {
+          active: {
+            label: 'Active',
+            description: 'Actively maintained and receiving updates.',
+            color: '#39ca30',
+            icon: 'circle-check',
+          },
+          beta: {
+            label: 'Beta',
+            description: 'Early release, testing and feedback welcome.',
+            color: '#e6af2e',
+            icon: 'circle-minus',
+          },
+          archived: {
+            label: 'Archived',
+            description: 'No longer maintained; provided for reference.',
+            color: '#ca3c25',
+            icon: 'circle-x',
+          },
+        },
+      } satisfies CommunityShowcasePluginOptions,
+    ],
     // [
     //  '@docusaurus/plugin-content-docs',
     //  /** @type {DocsOptions} */
@@ -360,7 +449,11 @@ const config: Config = {
       src: 'https://plausible.io/js/script.file-downloads.outbound-links.js',
       defer: true,
       'data-domain': 'halopsa.community',
-    }
+    },
+    {
+      src: 'https://challenges.cloudflare.com/turnstile/v0/api.js',
+      defer: true,
+    },
   ],
   markdown: {
     hooks: {

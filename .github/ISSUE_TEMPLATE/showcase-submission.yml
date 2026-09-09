@@ -1,0 +1,111 @@
+name: Showcase submission
+description: Submit a Halo integration, script, or tool to the community showcase.
+title: "[Showcase] "
+labels:
+  - showcase-submission
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing with the Halo community.
+
+        Use this issue form to submit a new showcase entry. A maintainer or automation can convert this to a YAML file.
+
+  - type: input
+    id: id
+    attributes:
+      label: ID
+      description: Lowercase identifier like halocommunity.my-tool
+      placeholder: halocommunity.my-tool
+    validations:
+      required: true
+
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      placeholder: My integration or script
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: One-line summary shown in the showcase card.
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Details (Markdown)
+      description: Setup notes, limitations, and examples using markdown.
+      placeholder: "## What it does"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: offer_type
+    attributes:
+      label: Offer Type
+      options:
+        - commercial
+        - free
+        - open-source
+    validations:
+      required: true
+
+  - type: dropdown
+    id: license
+    attributes:
+      label: License
+      options:
+        - MIT
+        - Apache-2.0
+        - GPL-3.0
+        - BSD-3-Clause
+        - MPL-2.0
+        - Proprietary
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: website
+    attributes:
+      label: Website (optional)
+      placeholder: https://example.com
+
+  - type: input
+    id: source
+    attributes:
+      label: Source (optional)
+      placeholder: https://github.com/org/repo
+
+  - type: input
+    id: author
+    attributes:
+      label: Author
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: Status
+      options:
+        - active
+        - beta
+        - archived
+
+  - type: checkboxes
+    id: tags
+    attributes:
+      label: Tags
+      options:
+        - label: featured
+        - label: integration
+        - label: script
+        - label: reporting
+        - label: utility
+    validations:
+      required: true

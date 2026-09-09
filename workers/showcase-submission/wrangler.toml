@@ -1,0 +1,16 @@
+name = "halo-showcase-submission"
+main = "src/index.ts"
+compatibility_date = "2026-09-09"
+
+[vars]
+GH_OWNER = "HaloCommunity"
+GH_REPO = "website"
+GH_BASE_BRANCH = "main"
+SHOWCASE_DATA_DIR = "showcase"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "6c439ede34514714a179b6465f2a0172"
+
+[observability]
+enabled = true

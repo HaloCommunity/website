@@ -1,0 +1,85 @@
+name: Showcase issue to YAML
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  issue-to-pr:
+    if: contains(github.event.issue.labels.*.name, 'showcase-submission')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse issue form
+        id: parse
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const body = context.payload.issue.body || '';
+            function section(title) {
+              const marker = `### ${title}`;
+              const start = body.indexOf(marker);
+              if (start === -1) return '';
+              const next = body.indexOf('\n### ', start + marker.length);
+              const block = next === -1 ? body.slice(start) : body.slice(start, next);
+              return block.split('\n').slice(1).join('\n').trim();
+            }
+
+            const tagsBlock = section('Tags');
+            const tags = tagsBlock
+              .split('\n')
+              .map((line) => line.replace(/^- \[[ xX]\] /, '').trim())
+              .filter(Boolean);
+
+            const payload = {
+              id: section('ID'),
+              name: section('Name'),
+              description: section('Description'),
+              details: section('Details (Markdown)'),
+              offerType: section('Offer Type'),
+              license: section('License'),
+              website: section('Website (optional)') || null,
+              source: section('Source (optional)') || null,
+              author: section('Author') || null,
+              status: section('Status') || null,
+              tags,
+            };
+
+            core.setOutput('payload', JSON.stringify(payload));
+            core.setOutput('id', payload.id || 'submission');
+
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Build YAML file
+        run: |
+          mkdir -p showcase
+          node -e "const fs=require('fs');const payload=JSON.parse(process.env.PAYLOAD);const clean=(v)=>String(v??'').replace(/[\\r\\n]+/g,' ').trim();const maybe=(v)=>{const t=String(v??'').trim();return t?t:'null'};const lines=[];lines.push('id: '+clean(payload.id));lines.push('name: '+clean(payload.name));lines.push('description: '+clean(payload.description));lines.push('details: |');for (const line of String(payload.details||'').replace(/\\r\\n/g,'\\n').split('\\n')) lines.push('  '+line);lines.push('website: '+maybe(payload.website));lines.push('source: '+maybe(payload.source));lines.push('author: '+maybe(payload.author));lines.push('tags:');for (const tag of payload.tags||[]) lines.push('  - '+clean(tag));lines.push('status: '+maybe(payload.status));lines.push('offerType: '+clean(payload.offerType));lines.push('license: '+clean(payload.license));lines.push('npmPackages: []');lines.push('minimumVersion: null');fs.writeFileSync(`showcase/${clean(payload.id)}.yaml`, lines.join('\\n')+'\\n');"
+        env:
+          PAYLOAD: ${{ steps.parse.outputs.payload }}
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: showcase-submission/issue-${{ github.event.issue.number }}
+          title: "[Showcase] ${{ steps.parse.outputs.id }}"
+          body: |
+            Generated from issue #${{ github.event.issue.number }}.
+          commit-message: "feat(showcase): add issue submission #${{ github.event.issue.number }}"
+          add-paths: |
+            showcase/${{ steps.parse.outputs.id }}.yaml
+
+      - name: Comment issue
+        uses: actions/github-script@v8
+        with:
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: 'Thanks for your submission. A pull request has been created for review.'
+            })

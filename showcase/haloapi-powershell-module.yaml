@@ -1,0 +1,27 @@
+id: halocommunity.haloapi-powershell-module
+name: HaloAPI PowerShell Module
+description: Official community PowerShell module for interacting with the Halo API.
+details: |
+  ## What it does
+  HaloAPI provides PowerShell cmdlets to authenticate and work with Halo entities through the REST API.
+
+  ## Install
+  ```powershell
+  Install-Module -Name HaloAPI -AllowPrerelease
+  ```
+
+  ## Links
+  - PowerShell Gallery package for release history and install options
+  - GitHub project site for source code and documentation
+website: https://docs.homotechsual.dev/modules/haloapi
+source: https://github.com/homotechsual/HaloAPI
+author: homotechsual
+tags:
+  - featured
+  - script
+  - integration
+status: active
+offerType: open-source
+license: MIT
+npmPackages: []
+minimumVersion: null

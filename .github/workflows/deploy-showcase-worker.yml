@@ -1,0 +1,58 @@
+name: Deploy showcase submission worker
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - workers/showcase-submission/**
+      - .github/workflows/deploy-showcase-worker.yml
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install worker dependencies
+        run: corepack yarn install
+        working-directory: workers/showcase-submission
+
+      - name: Run worker tests
+        run: corepack yarn test
+        working-directory: workers/showcase-submission
+
+      - name: Put GH repo token secret
+        run: |
+          printf '%s' "$WORKER_GH_REPO_TOKEN" | corepack yarn dlx wrangler secret put GH_REPO_TOKEN --config workers/showcase-submission/wrangler.toml
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          WORKER_GH_REPO_TOKEN: ${{ secrets.WORKER_GH_REPO_TOKEN }}
+
+      - name: Put Turnstile secret (optional)
+        if: ${{ secrets.WORKER_TURNSTILE_SECRET != '' }}
+        run: |
+          printf '%s' "$WORKER_TURNSTILE_SECRET" | corepack yarn dlx wrangler secret put TURNSTILE_SECRET --config workers/showcase-submission/wrangler.toml
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          WORKER_TURNSTILE_SECRET: ${{ secrets.WORKER_TURNSTILE_SECRET }}
+
+      - name: Deploy worker
+        run: corepack yarn dlx wrangler deploy --config workers/showcase-submission/wrangler.toml
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
