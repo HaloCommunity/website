@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 import Layout from '@theme/Layout';
 import Translate, {translate} from '@docusaurus/Translate';
 import clsx from 'clsx';
-import ShowcaseCard from '@theme/ShowcaseCard';
+import ShowcaseCard from '../ShowcaseCard';
 import styles from './styles.module.css';
 import type {
   ShowcaseItem,
@@ -132,8 +132,8 @@ function toYamlPayload(form: FormState, generatedId: string): Partial<CommunityS
     name: form.name || undefined,
     description: form.description || undefined,
     details: form.details || undefined,
-    website: form.website || null,
-    source: form.source || null,
+    website: form.website || undefined,
+    source: form.source || undefined,
     author: form.author || null,
     preview: form.preview || null,
     status: form.status || null,
