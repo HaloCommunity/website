@@ -407,6 +407,18 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
             </div>
 
             <div className={styles.field}>
+              <label className={styles.label} htmlFor="sf-author">Author <span className={styles.required}>*</span></label>
+              <input
+                id="sf-author"
+                className={clsx(styles.input, fieldError('author') && styles.inputError)}
+                type="text"
+                value={form.author}
+                onChange={(e) => setField('author', e.target.value)}
+                placeholder="Your name or org"
+              />
+            </div>
+
+            <div className={styles.field}>
               <label className={styles.label} htmlFor="sf-name">Name <span className={styles.required}>*</span></label>
               <input
                 id="sf-name"
@@ -496,32 +508,18 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
               </div>
             </div>
 
-            <div className={styles.fieldGrid}>
-              <div className={styles.field}>
-                <label className={styles.label} htmlFor="sf-author">Author <span className={styles.required}>*</span></label>
-                <input
-                  id="sf-author"
-                  className={clsx(styles.input, fieldError('author') && styles.inputError)}
-                  type="text"
-                  value={form.author}
-                  onChange={(e) => setField('author', e.target.value)}
-                  placeholder="Your name or org"
-                />
-              </div>
-
-              <div className={styles.field}>
-                <label className={styles.label} htmlFor="sf-status">Status</label>
-                <select
-                  id="sf-status"
-                  className={styles.select}
-                  value={form.status}
-                  onChange={(e) => setField('status', e.target.value)}>
-                  <option value="">(none)</option>
-                  {Object.entries(options.statuses).map(([key, status]) => (
-                    <option key={key} value={key}>{status.label}</option>
-                  ))}
-                </select>
-              </div>
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="sf-status">Status</label>
+              <select
+                id="sf-status"
+                className={styles.select}
+                value={form.status}
+                onChange={(e) => setField('status', e.target.value)}>
+                <option value="">(none)</option>
+                {Object.entries(options.statuses).map(([key, status]) => (
+                  <option key={key} value={key}>{status.label}</option>
+                ))}
+              </select>
             </div>
 
             <div className={styles.field}>
