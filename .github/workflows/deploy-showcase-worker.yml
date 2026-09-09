@@ -15,6 +15,11 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CF_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || secrets.CF_ACCOUNT_ID }}
+      WORKER_GH_REPO_TOKEN: ${{ secrets.WORKER_GH_REPO_TOKEN }}
+      WORKER_TURNSTILE_SECRET: ${{ secrets.WORKER_TURNSTILE_SECRET }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -39,13 +44,27 @@ jobs:
         run: corepack yarn test
         working-directory: workers/showcase-submission
 
+      - name: Validate required secrets
+        shell: bash
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "Missing Cloudflare API token. Set CLOUDFLARE_API_TOKEN or CF_API_TOKEN in repository secrets."
+            exit 1
+          fi
+
+          if [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "Missing Cloudflare account id. Set CLOUDFLARE_ACCOUNT_ID or CF_ACCOUNT_ID in repository secrets."
+            exit 1
+          fi
+
+          if [ -z "$WORKER_GH_REPO_TOKEN" ]; then
+            echo "Missing WORKER_GH_REPO_TOKEN in repository secrets."
+            exit 1
+          fi
+
       - name: Put GH repo token secret
         run: |
           printf '%s' "$WORKER_GH_REPO_TOKEN" | corepack yarn dlx wrangler secret put GH_REPO_TOKEN --config workers/showcase-submission/wrangler.toml
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-          WORKER_GH_REPO_TOKEN: ${{ secrets.WORKER_GH_REPO_TOKEN }}
 
       - name: Put Turnstile secret (optional)
         shell: bash
@@ -55,13 +74,6 @@ jobs:
           else
             echo "WORKER_TURNSTILE_SECRET is empty; skipping TURNSTILE_SECRET update."
           fi
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-          WORKER_TURNSTILE_SECRET: ${{ secrets.WORKER_TURNSTILE_SECRET }}
 
       - name: Deploy worker
         run: corepack yarn dlx wrangler deploy --config workers/showcase-submission/wrangler.toml
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
