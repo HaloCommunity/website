@@ -201,6 +201,7 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
   const options = showcase.options as CommunityShowcasePluginOptions;
   const submissionUrl = options.submissionApiUrl ?? null;
   const turnstileSiteKey = options.turnstileSiteKey ?? null;
+  const usingTurnstileTestKey = turnstileSiteKey === '1x00000000000000000000AA';
 
   const [form, setForm] = useState<FormState>(emptyForm);
   const [attempted, setAttempted] = useState(false);
@@ -435,6 +436,9 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
           <p>
             Use this form to submit an integration, script, or tool. Website and source links are optional.
           </p>
+          <p className={styles.subtleHint}>
+            Required fields are marked with an asterisk. Your submission opens a pull request for moderator review.
+          </p>
         </div>
 
         <div className={styles.layout}>
@@ -589,23 +593,32 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
             )}
 
             <div className={styles.actionRow}>
-              <button type="button" className="button button--secondary" onClick={handleCopyYaml}>
+              <button type="button" className={clsx('button button--secondary', styles.secondaryButton)} onClick={handleCopyYaml}>
                 {copied ? 'YAML Copied' : 'Copy YAML'}
               </button>
               <button
                 type="button"
-                className="button button--primary"
+                className={clsx('button button--primary', styles.primaryButton)}
                 onClick={handleSubmitToApi}
                 disabled={submitting}>
                 {submitting ? 'Submitting...' : 'Submit'}
               </button>
             </div>
 
-            {turnstileSiteKey && (
+            {turnstileSiteKey ? (
               <div className={styles.turnstileWrap}>
                 <div ref={turnstileContainerRef} />
+                {usingTurnstileTestKey && (
+                  <p className={styles.warningMsg}>
+                    Test site key is active. Replace SHOWCASE_TURNSTILE_SITE_KEY with your real key for production.
+                  </p>
+                )}
                 {turnstileLoadError && <p className={styles.errorMsg}>{turnstileLoadError}</p>}
               </div>
+            ) : (
+              <p className={styles.warningMsg}>
+                Security check is not configured. Set SHOWCASE_TURNSTILE_SITE_KEY at build time.
+              </p>
             )}
 
             {apiMessage && <p className={styles.successMsg}>{apiMessage}</p>}

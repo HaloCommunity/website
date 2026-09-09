@@ -44,7 +44,7 @@ const commonDocsPluginConfig = {
 
 const showcaseSchemaPath = join(dirname(fileURLToPath(import.meta.url)), 'showcase', 'schema.json');
 const showcaseSubmissionApiUrl = process.env.SHOWCASE_SUBMISSION_API_URL?.trim() || '';
-const showcaseTurnstileSiteKey = process.env.SHOWCASE_TURNSTILE_SITE_KEY?.trim() || '1x00000000000000000000AA';
+const showcaseTurnstileSiteKey = process.env.SHOWCASE_TURNSTILE_SITE_KEY?.trim() || '';
 
 type CommunityShowcasePluginOptions = ShowcasePluginOptions & {
   submissionApiUrl?: string;
@@ -242,7 +242,7 @@ const config: Config = {
         submitFormPath: 'submit',
         submitGithubRepo: 'HaloCommunity/website',
         submissionApiUrl: showcaseSubmissionApiUrl || undefined,
-        turnstileSiteKey: showcaseTurnstileSiteKey,
+        turnstileSiteKey: showcaseTurnstileSiteKey || undefined,
         favouriteTag: 'featured',
         tags: {
           featured: {
@@ -451,10 +451,6 @@ const config: Config = {
       src: 'https://plausible.io/js/script.file-downloads.outbound-links.js',
       defer: true,
       'data-domain': 'halopsa.community',
-    },
-    {
-      src: 'https://challenges.cloudflare.com/turnstile/v0/api.js',
-      defer: true,
     },
   ],
   markdown: {
