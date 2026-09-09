@@ -17,7 +17,6 @@ type Props = {
 type OfferType = 'commercial' | 'free' | 'open-source';
 
 type FormState = {
-  id: string;
   name: string;
   description: string;
   details: string;
@@ -43,7 +42,6 @@ type CommunityShowcasePluginOptions = PluginOptions & {
 };
 
 const emptyForm: FormState = {
-  id: '',
   name: '',
   description: '',
   details: '',
@@ -58,7 +56,7 @@ const emptyForm: FormState = {
 };
 
 const REQUIRED_FIELDS: (keyof FormState)[] = [
-  'id',
+  'author',
   'name',
   'description',
   'details',
@@ -84,9 +82,28 @@ function fieldHasValue(field: keyof FormState, value: FormState): boolean {
   return String(value[field]).trim().length > 0;
 }
 
-function toYamlPayload(form: FormState): Partial<CommunityShowcaseItem> {
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function buildGeneratedId(author: string, name: string): string {
+  const authorSlug = slugify(author);
+  const nameSlug = slugify(name);
+
+  if (!authorSlug || !nameSlug) {
+    return '';
+  }
+
+  return `${authorSlug}.${nameSlug}`;
+}
+
+function toYamlPayload(form: FormState, generatedId: string): Partial<CommunityShowcaseItem> {
   return {
-    id: form.id || undefined,
+    id: generatedId || undefined,
     name: form.name || undefined,
     description: form.description || undefined,
     details: form.details || undefined,
@@ -133,9 +150,9 @@ function toYamlString(item: Partial<CommunityShowcaseItem>): string {
   return `${lines.join('\n')}\n`;
 }
 
-function buildPreviewItem(form: FormState): CommunityShowcaseItem {
+function buildPreviewItem(form: FormState, generatedId: string): CommunityShowcaseItem {
   return {
-    id: form.id || 'preview',
+    id: generatedId || 'preview',
     name: form.name || 'Example integration',
     description: form.description || 'A short summary of the integration, script, or tool.',
     details:
@@ -165,9 +182,10 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
   const [turnstileError, setTurnstileError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const previewItem = useMemo(() => buildPreviewItem(form), [form]);
-  const yaml = useMemo(() => toYamlString(toYamlPayload(form)), [form]);
-  const valid = REQUIRED_FIELDS.every((field) => fieldHasValue(field, form));
+  const generatedId = useMemo(() => buildGeneratedId(form.author, form.name), [form.author, form.name]);
+  const previewItem = useMemo(() => buildPreviewItem(form, generatedId), [form, generatedId]);
+  const yaml = useMemo(() => toYamlString(toYamlPayload(form, generatedId)), [form, generatedId]);
+  const valid = generatedId.length > 0 && REQUIRED_FIELDS.every((field) => fieldHasValue(field, form));
 
   function setField<K extends keyof FormState>(field: K, value: FormState[K]) {
     setForm((prev) => ({...prev, [field]: value}));
@@ -223,7 +241,7 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
           'content-type': 'application/json',
         },
         body: JSON.stringify({
-          item: toYamlPayload(form),
+          item: toYamlPayload(form, generatedId),
           turnstileToken,
           routeBasePath: options.routeBasePath,
           dataDir: options.dataDir,
@@ -271,11 +289,11 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
               <label className={styles.label} htmlFor="sf-id">ID <span className={styles.required}>*</span></label>
               <input
                 id="sf-id"
-                className={clsx(styles.input, fieldError('id') && styles.inputError)}
+                className={clsx(styles.input, attempted && generatedId.length === 0 && styles.inputError)}
                 type="text"
-                value={form.id}
-                onChange={(e) => setField('id', e.target.value)}
-                placeholder="halocommunity.my-item"
+                value={generatedId}
+                readOnly
+                placeholder="author.tool-name"
               />
             </div>
 
@@ -371,10 +389,10 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
 
             <div className={styles.fieldGrid}>
               <div className={styles.field}>
-                <label className={styles.label} htmlFor="sf-author">Author</label>
+                <label className={styles.label} htmlFor="sf-author">Author <span className={styles.required}>*</span></label>
                 <input
                   id="sf-author"
-                  className={styles.input}
+                  className={clsx(styles.input, fieldError('author') && styles.inputError)}
                   type="text"
                   value={form.author}
                   onChange={(e) => setField('author', e.target.value)}
