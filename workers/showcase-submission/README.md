@@ -34,6 +34,8 @@ corepack yarn install
 corepack yarn dev
 ```
 
+The worker package has its own `packageManager` field, so running commands from this folder resolves Yarn through Corepack (not global Yarn classic).
+
 ## Deploy
 
 ```bash
