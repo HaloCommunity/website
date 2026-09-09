@@ -1,5 +1,6 @@
 # Dependencies
 /node_modules
+/workers/showcase-submission/node_modules
 
 # Production
 /build
@@ -18,3 +19,5 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+workers/showcase-submission/.yarn/install-state.gz
+.yarn/install-state.gz

@@ -12,6 +12,9 @@
 			"labeled",
 			"llms",
 			"mshick"
+		],
+		"npmSafetyGuard.suppressedAdvisories": [
+			"GHSA-36P8-MVP6-CV38"
 		]
 	}
 }

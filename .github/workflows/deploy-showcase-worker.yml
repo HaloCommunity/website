@@ -32,7 +32,7 @@ jobs:
         run: corepack install
 
       - name: Install worker dependencies
-        run: corepack yarn install
+        run: corepack yarn install --immutable
         working-directory: workers/showcase-submission
 
       - name: Run worker tests
