@@ -1,0 +1,39 @@
+id: ceej.stackjack-io
+name: StackJack.io
+description: StackJack connects Claude, ChatGPT, and Copilot (or any AI that speaks MCP) straight to your HaloPSA instance over MCP: 1,475 Halo tools, per-technician OAuth, no per-seat pricing, and a Free Tier to start on.
+details: |
+  StackJack is an MCP gateway (Model Context Protocol, the open standard AI assistants use to call tools) that plugs Claude, ChatGPT, Microsoft Copilot, Cursor, or any other MCP client directly into your HaloPSA instance. You connect Halo once, hand your team a URL, and from then on they can ask their AI assistant about tickets, clients, assets, contracts, and invoices in plain language, or have it do the work for them.
+  
+  ## What it does with Halo
+  
+  The HaloPSA connector covers 1,475 tools across the Halo API. Every read is on the Free Tier: ticket search and detail, client and site lookups, users, assets, contracts, invoices, actions, knowledge base, and so on. Pro adds the write tools (creating and updating tickets, adding actions and notes, logging time, moving work through your workflows) plus a higher call allowance, and Business is the same complete tool set with a bigger allowance. That is the only difference between tiers. Nothing on the Halo connector is gated behind Business.
+  
+  Authentication is per user via OAuth PKCE on every plan, including Free. Your technicians sign into Halo as themselves, so everything the AI does lands in Halo's audit trail under the actual person who asked for it, with that person's permissions, not a shared service account with admin rights on everything. Client ID & Secret is also supported if you want a shared credential for a bot.
+  
+  If you run more than one Halo instance (multiple tenants, a prod and a sandbox, an acquisition you haven't merged yet), you can attach all of them to one connector, pick the instance per call, or pin an endpoint to a specific one. Connections share the connector's call allowance and there is no per-connection fee.
+  
+  Halo's API responses are big. StackJack ships a HaloPSA response-shaping preset that trims them to what the model actually needs, so a ticket lookup doesn't eat half your context window. Compact and minimal catalog modes are there for AI clients that cap how many tools they will load per session.
+  
+  ## Beyond the chat window
+  
+  Agent Runners let you run Halo automations on a schedule, on demand, or from a webhook, with nobody sitting in a chat. Build them with a guided wizard, the advanced builder, or a template, test them in dry-run first, gate the risky steps behind approvals, and roll back to a previous version when you break something (you will, that's fine).
+  
+  For Microsoft shops, StackJack integrates with Microsoft 365 Copilot chat with per-user sign-in, syncs your directory from Entra, and supports custom tool roles so you decide exactly which Halo tools each group of people gets.
+  
+  Your data can be homed in the US or EU region.
+  
+  Docs at docs.stackjack.io, support at support.stackjack.io, roadmap and feature requests at feedback.stackjack.io.
+website: https://stackjack.io/connectors-halopsa
+source: null
+author: Ceej
+preview: null
+tags:
+  - featured
+  - integration
+  - reporting
+  - utility
+status: active
+offerType: commercial
+license: Proprietary
+npmPackages: []
+minimumVersion: null
