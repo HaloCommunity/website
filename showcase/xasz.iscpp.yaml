@@ -1,0 +1,42 @@
+id: xasz.iscpp
+name: ISCPP
+description: Improve Sophos Central Partner Package - Halo Alarm and Billing Integration
+details: |
+  ISCPP (Improve Sophos Central Partner Package) is an operations platform for MSPs that use Sophos Central.
+  
+  It helps teams manage multiple tenants from one place, automate recurring operational tasks, and integrate Sophos data into PSA workflows.
+  
+  ## Why ISCPP
+  
+  Sophos Central is powerful, but MSP workflows often require cross-tenant visibility and automation that are not available out of the box.
+  
+  ISCPP focuses on those gaps by combining:
+  
+  - Cross-tenant monitoring and search
+  - Alert forwarding and webhook workflows
+  - Billing-related data exports and integrations
+  - Firewall upgrade planning support
+  - Centralized health score reporting
+  
+  ## Core Features
+  
+  - **Multi-tenant overview** dashboard
+  - **Search endpoints** across all Sophos Central tenants
+  - Sophos Central **alert forwarding** via webhooks
+  - **Halo PSA** billing integration
+  - **NinjaOne** endpoint deployment support
+  - **Firewall** upgrade planning
+  - Tenant **health score** reporting
+website: null
+source: https://github.com/xasz/ISCPP
+author: xasz
+preview: null
+tags:
+  - integration
+  - utility
+  - reporting
+status: active
+offerType: free
+license: MIT
+npmPackages: []
+minimumVersion: null
