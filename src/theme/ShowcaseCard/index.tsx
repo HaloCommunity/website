@@ -133,31 +133,29 @@ export default function ShowcaseCard({item, options}: Props): React.JSX.Element 
             {!hasWebsite && <span className={styles.previewBadge}>No website link</span>}
           </div>
 
-        <div className={styles.headerRow}>
-          <h4 className={styles.title}>
-            {communityItem.website ? (
-              <Link href={communityItem.website} className={styles.titleLink}>
-                {communityItem.name}
+          <div className={styles.headerRow}>
+            <h4 className={styles.title}>
+              {communityItem.website ? (
+                <Link href={communityItem.website} className={styles.titleLink}>
+                  {communityItem.name}
+                </Link>
+              ) : (
+                <span>{communityItem.name}</span>
+              )}
+            </h4>
+
+            {communityItem.source && (
+              <Link href={communityItem.source} className="button button--secondary button--sm">
+                Source
               </Link>
-            ) : (
-              <span>{communityItem.name}</span>
             )}
-          </h4>
 
-          {communityItem.source && (
-            <Link href={communityItem.source} className="button button--secondary button--sm">
-              Source
-            </Link>
-          )}
-
-          {communityItem.website && (
-            <Link href={communityItem.website} className="button button--info button--sm">
-              Website
-            </Link>
-          )}
-        </div>
-
-          <p className={styles.description}>{communityItem.description}</p>
+            {communityItem.website && (
+              <Link href={communityItem.website} className="button button--info button--sm">
+                Website
+              </Link>
+            )}
+          </div>
 
           <button
             type="button"
@@ -166,79 +164,27 @@ export default function ShowcaseCard({item, options}: Props): React.JSX.Element 
             View full plugin info
           </button>
 
-          <div className={styles.metaGrid}>
-          <p className={styles.metaRow}>
-            <span className={styles.metaLabel}>ID:</span>
-            <span>{communityItem.id}</span>
-          </p>
-
-          <p className={styles.metaRow}>
-            <span className={styles.metaLabel}>Author:</span>
-            <span>{displayOrFallback(communityItem.author)}</span>
-          </p>
-
-          <p className={styles.metaRow}>
-            <span className={styles.metaLabel}>Offer Type:</span>
-            <span>{formatOfferType(communityItem.offerType ?? 'free')}</span>
-          </p>
-
-          <p className={styles.metaRow}>
-            <span className={styles.metaLabel}>License:</span>
-            <span>{displayOrFallback(communityItem.license)}</span>
-          </p>
-
-          <p className={styles.metaRow}>
-            <span className={styles.metaLabel}>Status:</span>
-            <span>{statusLabel}</span>
-          </p>
-
-          <p className={styles.metaRow}>
-            <span className={styles.metaLabel}>Website:</span>
-            {hasWebsite && communityItem.website ? (
-              <Link href={communityItem.website} className={styles.metaLink}>Open link</Link>
-            ) : (
-              <span>Not provided</span>
-            )}
-          </p>
-
-          <p className={styles.metaRow}>
-            <span className={styles.metaLabel}>Source:</span>
-            {communityItem.source ? (
-              <Link href={communityItem.source} className={styles.metaLink}>Open link</Link>
-            ) : (
-              <span>Not provided</span>
-            )}
-          </p>
-
-          <p className={styles.metaRow}>
-            <span className={styles.metaLabel}>Preview:</span>
-            {normalizedPreview && /^https?:\/\//i.test(normalizedPreview) ? (
-              <a href={normalizedPreview} className={styles.metaLink} target="_blank" rel="noreferrer">
-                Open link
-              </a>
-            ) : (
-              <span>{hasWebsite ? 'Auto-generated from website' : 'Placeholder image'}</span>
-            )}
-          </p>
-          </div>
-
-          {communityItem.details && (
-            <div className={styles.detailsBlock}>
-              <div className={styles.detailsLabel}>Details</div>
-              <div className={styles.detailsMarkdown}>
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  rehypePlugins={[[rehypeSanitize, markdownSchema]]}
-                  components={{
-                    a: ({node: _node, ...props}) => (
-                      <a {...props} target="_blank" rel="noreferrer" />
-                    ),
-                  }}>
-                  {communityItem.details}
-                </ReactMarkdown>
-              </div>
+          <dl className={styles.metaGrid}>
+            <div className={styles.metaCell}>
+              <dt className={styles.metaLabel}>Author</dt>
+              <dd className={styles.metaValue}>{displayOrFallback(communityItem.author)}</dd>
             </div>
-          )}
+
+            <div className={styles.metaCell}>
+              <dt className={styles.metaLabel}>Offer Type</dt>
+              <dd className={styles.metaValue}>{formatOfferType(communityItem.offerType ?? 'free')}</dd>
+            </div>
+
+            <div className={styles.metaCell}>
+              <dt className={styles.metaLabel}>License</dt>
+              <dd className={styles.metaValue}>{displayOrFallback(communityItem.license)}</dd>
+            </div>
+
+            <div className={styles.metaCell}>
+              <dt className={styles.metaLabel}>Status</dt>
+              <dd className={styles.metaValue}>{statusLabel}</dd>
+            </div>
+          </dl>
         </div>
 
         <ul className={styles.tags}>

@@ -43,9 +43,10 @@
 
 .headerRow {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.65rem;
 }
 
 .title {
@@ -59,74 +60,40 @@
   text-decoration: none;
 }
 
-.description {
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
-}
-
 .detailsButton {
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.75rem;
 }
 
 .metaGrid {
   display: grid;
-  gap: 0.32rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
 
-.metaRow {
+.metaCell {
   margin: 0;
-  font-size: 0.8rem;
-  color: var(--ifm-color-emphasis-700);
-  display: flex;
-  gap: 0.35rem;
-  align-items: baseline;
-  flex-wrap: wrap;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ifm-card-background-color) 90%, var(--ifm-color-emphasis-100) 10%);
 }
 
 .metaLabel {
+  margin: 0;
+  font-size: 0.68rem;
   font-weight: 700;
-}
-
-.metaLink {
-  font-weight: 600;
-  text-decoration: underline;
-}
-
-.detailsBlock {
-  margin-top: 0.75rem;
-  padding: 0.75rem;
-  border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: var(--ifm-global-radius);
-  background: var(--ifm-color-emphasis-100);
-}
-
-.detailsLabel {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
   letter-spacing: 0.03em;
-  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
 }
 
-.detailsMarkdown {
-  font-size: 0.8rem;
-  line-height: 1.45;
-}
-
-.detailsMarkdown p {
-  margin: 0.4rem 0;
-}
-
-.detailsMarkdown ul,
-.detailsMarkdown ol {
-  margin: 0.4rem 0 0.4rem 1.1rem;
-}
-
-.detailsMarkdown code {
-  padding: 0.1rem 0.25rem;
-  border-radius: 4px;
-  background: var(--ifm-color-emphasis-200);
+.metaValue {
+  margin: 0;
+  margin-top: 0.15rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-700);
 }
 
 .tags {
@@ -204,4 +171,10 @@
 
 .modalDetails p {
   margin: 0.55rem 0;
+}
+
+@media (max-width: 560px) {
+  .metaGrid {
+    grid-template-columns: 1fr;
+  }
 }
