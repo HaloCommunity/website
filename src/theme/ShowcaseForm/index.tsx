@@ -451,6 +451,8 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
                 type="text"
                 value={generatedId}
                 readOnly
+                aria-disabled="true"
+                disabled
                 placeholder="author.tool-name"
               />
             </div>
