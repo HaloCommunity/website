@@ -1,0 +1,18 @@
+id: jack-musick.bifrost
+name: Bifrost
+description: Open-source development platform for MSPs to develop apps, workflows, agents and more for you and your customers.
+details: |
+  [Bifrost](https://github.com/gobifrost/bifrost) is an open-source, self-hosted automation platform built for managed service providers and IT teams. Let coding agents build your workflows, AI agents, and apps using standard Python and React, while Bifrost handles authentication, secrets, scheduling, and execution monitoring. The code stays yours to inspect, maintain, and adapt, so investing in AI-assisted development doesn’t mean accumulating dependencies on a proprietary platform. Its multi-tenant architecture lets you build once and serve multiple customers, each with their own configuration, connections, and data.
+  
+  Use it to connect business systems, automate routine operations, give customers self-service tools, or even build things to resell. Everything runs on infrastructure you control. Bifrost is licensed under AGPL-3.0 and runs with Docker Compose; follow the [setup instructions](https://github.com/gobifrost/bifrost#quick-start) to get started.
+website: https://gobifrost.com/
+source: https://github.com/gobifrost/bifrost
+author: Jack Musick
+preview: null
+tags:
+  - integration
+status: active
+offerType: open-source
+license: AGPL-3.0
+npmPackages: []
+minimumVersion: null
