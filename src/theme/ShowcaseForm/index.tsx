@@ -186,7 +186,7 @@ function buildPreviewItem(form: FormState, generatedId: string): CommunityShowca
     details:
       form.details ||
       '## Summary\nA richer markdown description appears here with links, bullet points and usage notes.',
-    website: form.website || '#',
+    website: form.website || '',
     source: form.source || null,
     author: form.author || null,
     preview: form.preview || null,

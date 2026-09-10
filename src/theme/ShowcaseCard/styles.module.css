@@ -5,6 +5,42 @@
   min-height: 100%;
 }
 
+.previewBlock {
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+
+.previewLink {
+  display: block;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.previewImage {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  background: color-mix(in srgb, var(--ifm-background-color) 80%, #0d1424 20%);
+}
+
+.previewBadge {
+  position: absolute;
+  left: 0.55rem;
+  bottom: 0.55rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--ifm-color-emphasis-300) 85%, transparent 15%);
+  background: color-mix(in srgb, var(--ifm-card-background-color) 82%, #0f1727 18%);
+  color: var(--ifm-color-emphasis-800);
+}
+
 .headerRow {
   display: flex;
   align-items: center;

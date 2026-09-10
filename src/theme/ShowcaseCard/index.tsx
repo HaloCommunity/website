@@ -23,6 +23,8 @@ type CommunityShowcaseItem = ShowcaseItem & {
   details?: string;
 };
 
+const DEFAULT_PREVIEW_IMAGE = '/img/undraw_halopsa_integrate.svg';
+
 const markdownSchema = {
   ...defaultSchema,
   attributes: {
@@ -53,6 +55,7 @@ function displayOrFallback(value: string | null | undefined): string {
 
 export default function ShowcaseCard({item, options}: Props): React.JSX.Element {
   const communityItem = item as CommunityShowcaseItem;
+  const previewImage = communityItem.preview?.trim() ? communityItem.preview : DEFAULT_PREVIEW_IMAGE;
   const statusLabel =
     communityItem.status && options.statuses[communityItem.status]
       ? options.statuses[communityItem.status].label
@@ -62,6 +65,17 @@ export default function ShowcaseCard({item, options}: Props): React.JSX.Element 
   return (
     <li className={clsx('card shadow--md', styles.card)}>
       <div className="card__body">
+        <div className={styles.previewBlock}>
+          {communityItem.website ? (
+            <Link href={communityItem.website} className={styles.previewLink}>
+              <img src={previewImage} alt={`${communityItem.name} preview`} className={styles.previewImage} />
+            </Link>
+          ) : (
+            <img src={previewImage} alt={`${communityItem.name} preview`} className={styles.previewImage} />
+          )}
+          {!communityItem.website && <span className={styles.previewBadge}>No website link</span>}
+        </div>
+
         <div className={styles.headerRow}>
           <h4 className={styles.title}>
             {communityItem.website ? (
