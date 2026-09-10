@@ -1,0 +1,39 @@
+.pageHeader {
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.favouriteSection {
+  padding: 2rem 0;
+  background-color: var(--ifm-color-emphasis-100);
+  margin-bottom: 2rem;
+}
+
+.favouriteHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.favouriteHeader h2 {
+  margin: 0;
+}
+
+.noResults {
+  text-align: center;
+  padding: 2rem;
+}
+
+.submitButton {
+  display: inline-flex;
+  align-items: center;
+}
