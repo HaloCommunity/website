@@ -238,7 +238,7 @@ const config: Config = {
         schemaUrl: 'https://halopsa.community/showcase/schema.json',
         routeBasePath: 'showcase',
         pageTitle: 'Community Integrations, Scripts and Tools',
-        pageDescription: 'Share and discover Halo community-built integrations, scripts, and utilities. If you want to correct or improve an existing entry, head over to GitHub and submit a pull request or issue: https://github.com/HaloCommunity/website',
+        pageDescription: 'Share and discover Halo community-built integrations, scripts, and utilities. If you want to correct or improve an existing entry, head over to GitHub and submit a pull request or issue - click on GitHub on the navbar above!',
         submitLabel: 'Share an item',
         submitFormPath: 'submit',
         submitGithubRepo: 'HaloCommunity/website',
