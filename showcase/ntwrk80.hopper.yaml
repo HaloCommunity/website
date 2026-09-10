@@ -1,0 +1,92 @@
+id: ntwrk80.hopper
+name: Hopper
+description: Hopper makes it easy for agents to record time from Outlook calendar entries that are not in Halo.
+details: |
+  # Hopper — turn Outlook meetings into HaloPSA time entries while they're still fresh
+  
+  **Free desktop app for Windows · by RedEye Network Solutions**
+  
+  Hopper sits in the Windows tray, watches your Outlook calendar, and prompts you the moment a meeting ends: pick the customer, the ticket or project, add a note, confirm the duration, and the time lands in HaloPSA as an Action. The whole point is the five-minute window right after a call, when you still remember what it was about and before the next one starts.
+  
+  We built it for our own engineers because meeting time was the part of the day that never made it onto the timesheet. It has been in daily use at RedEye since mid-2026, and we are sharing it with the Halo community as a free download.
+  
+  ## What it does
+  
+  - **Prompts at meeting end.** An OS notification (optionally a persistent corner toast) appears when a calendar event ends. Tag it, skip it, or open the app. Nothing is written to Halo until you press Submit.
+  - **Tag during the meeting too.** An in-progress picker lets you log a meeting before it ends, so a back-to-back afternoon doesn't pile up.
+  - **Pre-selects the customer from the subject.** "Contoso – firewall change" pre-fills Contoso when the match is unambiguous; otherwise the field stays blank and you pick.
+  - **Ticket or project, contract, charge code, note.** The same fields you would fill on a Halo Action, with a search box instead of a dropdown of every ticket you have.
+  - **Create a ticket inline.** No ticket yet for that call? Create one from the tag form and the time goes on it.
+  - **Quick Time** for ad-hoc work the calendar never saw.
+  - **Meeting-start reminder** five minutes before each meeting, with a **Join** button for Teams meetings.
+  - **Skip with a reason** (personal, not attended, covered elsewhere, already logged in Halo), and a Review Skipped list with Undo. Out-of-office / PTO blocks are skipped automatically.
+  - **Optional cross-machine sync.** Point two installs at a OneDrive (or any synced) folder and a meeting you tagged on your desktop stops prompting on your laptop. Only opaque ids and timestamps go in that folder.
+  - **Local-first.** Calendar and customer data live in an encrypted SQLite cache on your machine (DPAPI). Tokens live in Windows' credential store. The config file holds no secrets.
+  
+  ## Install
+  
+  Windows 10 or 11, x64.
+  
+  ```
+  winget install Hopper --source winget
+  ```
+  
+  (Or the exact form: `winget install --id RedEyeNetworkSolutions.Hopper`.) The installer is Authenticode-signed by RedEye Network Solutions LLC and installs per-user, so no admin rights are needed. `winget upgrade` picks up new releases.
+  
+  ## Setup
+  
+  Hopper is **bring-your-own-tenant**. It is not a hosted service and ships no Halo or Microsoft tenant of its own, so before first launch you register two apps. Both are public (PKCE) clients: **no client secret is created or stored anywhere.** Every engineer signs in as themselves, and Hopper can never do more in Halo than that engineer's own agent role allows.
+  
+  **1. HaloPSA API application** (Configuration → Integrations → HaloPSA API → View Applications → New)
+  
+  - Authentication method: **Authorisation Code** (native / public client, PKCE)
+  - Redirect URL: `http://localhost:8123/callback`
+  - Permissions: `read:tickets`, `edit:tickets`, `read:customers` (enough to search clients, tickets and projects, and to add Actions)
+  - Note the **Client ID**, plus the Resource Server and Authorisation Server URLs shown on that page.
+  
+  **2. Microsoft Entra app registration** (entra.microsoft.com → App registrations → New)
+  
+  - Supported account types: **single tenant**
+  - Redirect URI: platform **Public client/native**, value `http://localhost`
+  - Authentication → Advanced → **Allow public client flows: Yes**
+  - API permissions → Microsoft Graph → Delegated: `User.Read`, `Calendars.Read`, `offline_access`, then **Grant admin consent** so users don't each hit a consent prompt.
+  - Note the **Directory (tenant) ID** and **Application (client) ID**.
+  
+  **3. First launch**
+  
+  Hopper opens a setup wizard asking for the six values above (Halo resource server, auth server, client ID, redirect URI; Entra tenant ID and client ID). Paste a config your admin sends round, or type them in. It then signs you in to Microsoft and to Halo through your browser, runs a read-only check against each, and only enables Finish once both pass. Do this once per tenant and every engineer can reuse the same six values.
+  
+  ## Scope
+  
+  - **Reads** your Outlook calendar over Microsoft Graph (delta sync, recurring series handled).
+  - **Writes** one thing to HaloPSA: an **Action** carrying the time, note, charge rate / contract you chose. It can also create a ticket when you ask it to. It never edits or deletes anything else, and it never writes without you clicking Submit.
+  - **Single user, single machine** (plus the optional handled-state sync between your own machines). There is no server, no shared database, no admin console.
+  - **Network egress** beyond Graph and Halo: one version check to `updates.redeyenetworks.com` carrying the app version, platform and architecture. Nothing else leaves the machine. No analytics service, no crash reporter, no fonts from a CDN.
+  
+  ## Caveats, honestly
+  
+  - **Windows only for now.** x64. No ARM64 build yet.
+  - **Microsoft 365 only.** Calendar comes from Outlook via Graph. No Google Workspace, no on-prem Exchange.
+  - **Halo scopes vary by tenant.** If a scope you requested isn't ticked on the API application's Permissions tab, Halo silently drops it. Hopper logs what was granted to `%APPDATA%\Hopper\halo-auth.log`; a `DROPPED=` marker on that line is the thing to check if a search or submit comes back 403.
+  - **A stalled submit is reported as "couldn't confirm", not retried.** If Halo stops responding mid-write, Hopper does not know whether the Action landed, so it says so and leaves it to you to check Halo rather than risk billing a customer twice. This is deliberate.
+  - **It's an engineer's tool, not a timesheet replacement.** It captures meeting time and ad-hoc time; it doesn't approve, report, or reconcile anything.
+  - **Free, closed source, no warranty.** RedEye maintains it for our own use and shares the installer as-is. We will fix things that break for us and are glad to hear what breaks for you, but there is no SLA.
+  - **Not affiliated with Halo.** Built against the public HaloPSA API by a Halo customer.
+  
+  ## Feedback
+  
+  Send feedback to bstory@redeyenetworks.com
+  
+  License: Proprietary, free to use. Not for redistribution or resale.
+  
+website: null
+source: null
+author: ntwrk80
+preview: null
+tags:
+  - utility
+status: beta
+offerType: free
+license: Proprietary
+npmPackages: []
+minimumVersion: null
