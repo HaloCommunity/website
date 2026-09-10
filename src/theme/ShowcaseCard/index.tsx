@@ -144,16 +144,20 @@ export default function ShowcaseCard({item, options}: Props): React.JSX.Element 
               )}
             </h4>
 
-            {communityItem.source && (
-              <Link href={communityItem.source} className="button button--secondary button--sm">
-                Source
-              </Link>
-            )}
+            {(communityItem.source || communityItem.website) && (
+              <div className={styles.actionRow}>
+                {communityItem.source && (
+                  <Link href={communityItem.source} className="button button--secondary button--sm">
+                    Source
+                  </Link>
+                )}
 
-            {communityItem.website && (
-              <Link href={communityItem.website} className="button button--info button--sm">
-                Website
-              </Link>
+                {communityItem.website && (
+                  <Link href={communityItem.website} className="button button--info button--sm">
+                    Website
+                  </Link>
+                )}
+              </div>
             )}
           </div>
 

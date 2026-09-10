@@ -78,6 +78,12 @@ const LICENSE_OPTIONS = [
   'Other',
 ] as const;
 
+const RESERVED_TAGS = new Set(['featured']);
+
+function isUserSelectableTag(tag: string): boolean {
+  return !RESERVED_TAGS.has(tag.toLowerCase());
+}
+
 type TurnstileWidgetId = string | number;
 
 type TurnstileApi = {
@@ -332,6 +338,10 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
   }
 
   function toggleTag(tag: string, checked: boolean) {
+    if (!isUserSelectableTag(tag)) {
+      return;
+    }
+
     setForm((prev) => ({
       ...prev,
       tags: checked ? [...prev.tags, tag] : prev.tags.filter((value) => value !== tag),
@@ -576,7 +586,9 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
             <div className={styles.field}>
               <label className={styles.label}>Tags</label>
               <div className={styles.checkboxGroup}>
-                {Object.entries(options.tags).map(([key, tag]) => (
+                {Object.entries(options.tags)
+                  .filter(([key]) => isUserSelectableTag(key))
+                  .map(([key, tag]) => (
                   <label className={styles.checkboxLabel} key={key}>
                     <input
                       type="checkbox"
@@ -586,7 +598,7 @@ export default function ShowcaseForm({showcase}: Props): React.JSX.Element {
                     <span className={styles.tagDot} style={{backgroundColor: tag.color}} />
                     {tag.label}
                   </label>
-                ))}
+                  ))}
               </div>
             </div>
 

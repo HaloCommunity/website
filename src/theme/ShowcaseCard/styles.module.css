@@ -49,6 +49,13 @@
   margin-bottom: 0.65rem;
 }
 
+.actionRow {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 .title {
   margin: 0;
   flex: 1 1 auto;

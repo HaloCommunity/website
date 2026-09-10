@@ -59,6 +59,11 @@ describe('validateItem', () => {
     const item = {...validItem, license: 'GPLv2'};
     expect(validateItem(item)).toContain('Invalid license value');
   });
+
+  it('rejects featured tag from submissions', () => {
+    const item = {...validItem, tags: ['featured', 'utility']};
+    expect(validateItem(item)).toContain('reserved for moderators');
+  });
 });
 
 describe('toYaml', () => {

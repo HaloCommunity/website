@@ -27,6 +27,8 @@ export const ALLOWED_LICENSES = [
   'Other',
 ] as const;
 
+const RESERVED_SUBMISSION_TAGS = new Set(['featured']);
+
 export function sanitizeSingleLine(value: string): string {
   return value.replace(/[\r\n]+/g, ' ').trim();
 }
@@ -67,6 +69,14 @@ export function validateItem(item: ShowcaseItem): string | null {
 
   if (!Array.isArray(item.tags) || item.tags.length === 0) {
     return 'At least one tag is required.';
+  }
+
+  if (
+    item.tags
+      .map((tag) => tag.trim().toLowerCase())
+      .some((tag) => RESERVED_SUBMISSION_TAGS.has(tag))
+  ) {
+    return 'The featured tag is reserved for moderators.';
   }
 
   if (!['commercial', 'free', 'open-source'].includes(item.offerType)) {
