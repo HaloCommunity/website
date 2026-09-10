@@ -30,7 +30,7 @@ details: |
 website: null
 source: https://github.com/xasz/ISCPP
 author: xasz
-preview: /img/undraw_halopsa_integrate.svg
+preview: null
 tags:
   - integration
   - utility
@@ -40,4 +40,5 @@ offerType: free
 license: MIT
 npmPackages: []
 minimumVersion: null
+
 

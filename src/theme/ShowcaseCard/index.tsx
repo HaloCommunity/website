@@ -80,12 +80,22 @@ function normalizePreview(value: string | null | undefined): string | null {
   return trimmed;
 }
 
+function resolveScreenshotUrl(template: string, website: string): string {
+  return template
+    .replace('{url}', encodeURIComponent(website))
+    .replace('{rawUrl}', website);
+}
+
 export default function ShowcaseCard({item, options}: Props): React.JSX.Element {
   const communityItem = item as CommunityShowcaseItem;
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const normalizedPreview = normalizePreview(communityItem.preview);
   const hasWebsite = Boolean(communityItem.website && communityItem.website.trim().length > 0);
-  const previewImage = hasWebsite ? null : normalizedPreview ?? DEFAULT_PREVIEW_IMAGE;
+  const generatedPreview =
+    !normalizedPreview && hasWebsite && options.screenshotUrl
+      ? resolveScreenshotUrl(options.screenshotUrl, communityItem.website)
+      : null;
+  const previewImage = normalizedPreview ?? generatedPreview ?? (!hasWebsite ? DEFAULT_PREVIEW_IMAGE : null);
   const statusLabel =
     communityItem.status && options.statuses[communityItem.status]
       ? options.statuses[communityItem.status].label
@@ -96,11 +106,22 @@ export default function ShowcaseCard({item, options}: Props): React.JSX.Element 
     <>
       <li className={clsx('card shadow--md', styles.card)}>
         <div className="card__body">
-        <div className={styles.previewBlock}>
-          {hasWebsite && communityItem.website ? (
-            <Link href={communityItem.website} className={styles.previewLink}>
+          <div className={styles.previewBlock}>
+            {hasWebsite && communityItem.website && previewImage ? (
+              <Link href={communityItem.website} className={styles.previewLink}>
+                <img
+                  src={previewImage}
+                  alt={`${communityItem.name} preview`}
+                  className={styles.previewImage}
+                  onError={(event) => {
+                    event.currentTarget.onerror = null;
+                    event.currentTarget.src = DEFAULT_PREVIEW_IMAGE;
+                  }}
+                />
+              </Link>
+            ) : previewImage ? (
               <img
-                src={communityItem.website}
+                src={previewImage}
                 alt={`${communityItem.name} preview`}
                 className={styles.previewImage}
                 onError={(event) => {
@@ -108,20 +129,9 @@ export default function ShowcaseCard({item, options}: Props): React.JSX.Element 
                   event.currentTarget.src = DEFAULT_PREVIEW_IMAGE;
                 }}
               />
-            </Link>
-          ) : previewImage ? (
-            <img
-              src={previewImage}
-              alt={`${communityItem.name} preview`}
-              className={styles.previewImage}
-              onError={(event) => {
-                event.currentTarget.onerror = null;
-                event.currentTarget.src = DEFAULT_PREVIEW_IMAGE;
-              }}
-            />
-          ) : null}
-          {!hasWebsite && <span className={styles.previewBadge}>No website link</span>}
-        </div>
+            ) : null}
+            {!hasWebsite && <span className={styles.previewBadge}>No website link</span>}
+          </div>
 
         <div className={styles.headerRow}>
           <h4 className={styles.title}>
@@ -202,10 +212,12 @@ export default function ShowcaseCard({item, options}: Props): React.JSX.Element 
 
           <p className={styles.metaRow}>
             <span className={styles.metaLabel}>Preview:</span>
-            {normalizedPreview ? (
-              <Link href={normalizedPreview} className={styles.metaLink}>Open link</Link>
+            {normalizedPreview && /^https?:\/\//i.test(normalizedPreview) ? (
+              <a href={normalizedPreview} className={styles.metaLink} target="_blank" rel="noreferrer">
+                Open link
+              </a>
             ) : (
-              <span>Not provided</span>
+              <span>{hasWebsite ? 'Auto-generated from website' : 'Placeholder image'}</span>
             )}
           </p>
           </div>

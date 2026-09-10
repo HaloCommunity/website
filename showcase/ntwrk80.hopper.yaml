@@ -82,7 +82,7 @@ details: |
 website: null
 source: null
 author: ntwrk80
-preview: /img/undraw_halopsa_integrate.svg
+preview: null
 tags:
   - utility
 status: beta
@@ -90,4 +90,5 @@ offerType: free
 license: Proprietary
 npmPackages: []
 minimumVersion: null
+
 

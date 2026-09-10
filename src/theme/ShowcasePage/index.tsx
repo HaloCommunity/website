@@ -3,8 +3,8 @@ import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import Translate, {translate} from '@docusaurus/Translate';
-import ShowcaseFilters from '@theme/ShowcaseFilters';
-import ShowcaseCard from '@theme/ShowcaseCard';
+import ShowcaseFilters from '../../../node_modules/@homotechsual/docusaurus-plugin-showcase/lib/theme/ShowcaseFilters/index.js';
+import ShowcaseCard from '../ShowcaseCard';
 import type {ShowcaseItem, ShowcasePageData} from '@homotechsual/docusaurus-plugin-showcase';
 import styles from './styles.module.css';
 
