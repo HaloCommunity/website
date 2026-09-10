@@ -1,0 +1,30 @@
+id: moovila.moovila-perfect-project
+name: Moovila Perfect Project
+description: Connect HaloPSA with Moovila Perfect Project to automate project timelines, synchronize data in real time, and identify delivery risks before they cause delays.
+details: |
+  Moovila Perfect Project brings automated project timeline management, continuous risk monitoring, and portfolio visibility to HaloPSA.
+
+  The native, bi-directional integration synchronizes data between both platforms in real time, allowing teams to work in either system without duplicating data or manually keeping the two platforms aligned.
+  
+  Key Capabilities: 
+  
+  - Update entire project timelines when dates or dependencies change 
+  - Detect schedule risks and potential delays through 24/7 project monitoring 
+  - Create and manage dependencies between tasks and projects 
+  - View project health across the entire portfolio 
+  - Assign work based on skills, roles, availability, and resource capacity 
+  - Standardize project delivery with reusable templates and template analytics 
+  - Track time directly within work tickets for faster, more accurate billing 
+  
+  Moovila helps MSPs build realistic project plans, identify problems earlier, and keep teams aligned—reducing manual work, preventing costly delays, and delivering projects more predictably and profitably.
+website: https://www.moovila.com/integrations-halopsa
+source: null
+author: Moovila
+preview: null
+tags:
+  - integration
+status: active
+offerType: commercial
+license: Proprietary
+npmPackages: []
+minimumVersion: null
