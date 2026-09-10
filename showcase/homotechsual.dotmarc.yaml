@@ -7,7 +7,7 @@ details: |
 website: https://dotmarc.app/
 source: https://github.com/homotechsual/dotmarc
 author: homotechsual
-preview: /img/undraw_halopsa_integrate.svg
+preview: null
 tags:
   - featured
   - integration
@@ -16,4 +16,5 @@ offerType: open-source
 license: AGPL-3.0
 npmPackages: []
 minimumVersion: null
+
 

@@ -8,7 +8,7 @@ details: |
 website: https://gobifrost.com/
 source: https://github.com/gobifrost/bifrost
 author: Jack Musick
-preview: /img/undraw_halopsa_integrate.svg
+preview: null
 tags:
   - integration
 status: active
@@ -16,4 +16,5 @@ offerType: open-source
 license: AGPL-3.0
 npmPackages: []
 minimumVersion: null
+
 

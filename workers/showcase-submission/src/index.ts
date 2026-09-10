@@ -94,7 +94,7 @@ async function createSubmission(payload: SubmissionPayload, env: Env): Promise<{
 
   rawItem.website = normalizeUrl(rawItem.website);
   rawItem.source = normalizeUrl(rawItem.source);
-  rawItem.preview = normalizeUrl(rawItem.preview) ?? DEFAULT_PREVIEW_IMAGE;
+  rawItem.preview = rawItem.website ? normalizeUrl(rawItem.preview) : normalizeUrl(rawItem.preview) ?? DEFAULT_PREVIEW_IMAGE;
 
   const error = validateItem(rawItem);
   if (error) {

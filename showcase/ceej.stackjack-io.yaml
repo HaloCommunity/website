@@ -26,7 +26,7 @@ details: |
 website: https://stackjack.io/connectors-halopsa
 source: null
 author: Ceej
-preview: /img/undraw_halopsa_integrate.svg
+preview: null
 tags:
   - featured
   - integration
@@ -37,4 +37,5 @@ offerType: commercial
 license: Proprietary
 npmPackages: []
 minimumVersion: null
+
 

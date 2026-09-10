@@ -84,7 +84,8 @@ export default function ShowcaseCard({item, options}: Props): React.JSX.Element 
   const communityItem = item as CommunityShowcaseItem;
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const normalizedPreview = normalizePreview(communityItem.preview);
-  const previewImage = normalizedPreview ?? DEFAULT_PREVIEW_IMAGE;
+  const hasWebsite = Boolean(communityItem.website && communityItem.website.trim().length > 0);
+  const previewImage = hasWebsite ? null : normalizedPreview ?? DEFAULT_PREVIEW_IMAGE;
   const statusLabel =
     communityItem.status && options.statuses[communityItem.status]
       ? options.statuses[communityItem.status].label
@@ -96,10 +97,10 @@ export default function ShowcaseCard({item, options}: Props): React.JSX.Element 
       <li className={clsx('card shadow--md', styles.card)}>
         <div className="card__body">
         <div className={styles.previewBlock}>
-          {communityItem.website ? (
+          {hasWebsite && communityItem.website ? (
             <Link href={communityItem.website} className={styles.previewLink}>
               <img
-                src={previewImage}
+                src={communityItem.website}
                 alt={`${communityItem.name} preview`}
                 className={styles.previewImage}
                 onError={(event) => {
@@ -108,7 +109,7 @@ export default function ShowcaseCard({item, options}: Props): React.JSX.Element 
                 }}
               />
             </Link>
-          ) : (
+          ) : previewImage ? (
             <img
               src={previewImage}
               alt={`${communityItem.name} preview`}
@@ -118,8 +119,8 @@ export default function ShowcaseCard({item, options}: Props): React.JSX.Element 
                 event.currentTarget.src = DEFAULT_PREVIEW_IMAGE;
               }}
             />
-          )}
-          {!communityItem.website && <span className={styles.previewBadge}>No website link</span>}
+          ) : null}
+          {!hasWebsite && <span className={styles.previewBadge}>No website link</span>}
         </div>
 
         <div className={styles.headerRow}>
@@ -183,7 +184,7 @@ export default function ShowcaseCard({item, options}: Props): React.JSX.Element 
 
           <p className={styles.metaRow}>
             <span className={styles.metaLabel}>Website:</span>
-            {communityItem.website ? (
+            {hasWebsite && communityItem.website ? (
               <Link href={communityItem.website} className={styles.metaLink}>Open link</Link>
             ) : (
               <span>Not provided</span>
