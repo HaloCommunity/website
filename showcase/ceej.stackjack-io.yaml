@@ -1,6 +1,6 @@
 id: ceej.stackjack-io
 name: StackJack.io
-description: StackJack connects Claude, ChatGPT, and Copilot (or any AI that speaks MCP) straight to your HaloPSA instance over MCP: 1,475 Halo tools, per-technician OAuth, no per-seat pricing, and a Free Tier to start on.
+description: "StackJack connects Claude, ChatGPT, and Copilot (or any AI that speaks MCP) straight to your HaloPSA instance over MCP: 1,475 Halo tools, per-technician OAuth, no per-seat pricing, and a Free Tier to start on."
 details: |
   StackJack is an MCP gateway (Model Context Protocol, the open standard AI assistants use to call tools) that plugs Claude, ChatGPT, Microsoft Copilot, Cursor, or any other MCP client directly into your HaloPSA instance. You connect Halo once, hand your team a URL, and from then on they can ask their AI assistant about tickets, clients, assets, contracts, and invoices in plain language, or have it do the work for them.
   
