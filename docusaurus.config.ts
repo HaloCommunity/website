@@ -233,6 +233,7 @@ const config: Config = {
       {
         id: 'community-showcase',
         dataDir: 'showcase',
+        screenshotUrl: 'https://screengrabber.tools.homotechsual.dev/{url}/opengraph/_width:640?format=jpeg',
         schemaPath: showcaseSchemaPath,
         schemaUrl: 'https://halopsa.community/showcase/schema.json',
         routeBasePath: 'showcase',
