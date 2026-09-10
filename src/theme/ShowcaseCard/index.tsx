@@ -47,8 +47,17 @@ function formatOfferType(value: OfferType): string {
   }
 }
 
-export default function ShowcaseCard({item}: Props): React.JSX.Element {
+function displayOrFallback(value: string | null | undefined): string {
+  return value && value.trim().length > 0 ? value : 'Not provided';
+}
+
+export default function ShowcaseCard({item, options}: Props): React.JSX.Element {
   const communityItem = item as CommunityShowcaseItem;
+  const statusLabel =
+    communityItem.status && options.statuses[communityItem.status]
+      ? options.statuses[communityItem.status].label
+      : displayOrFallback(communityItem.status);
+  const tagLabels = communityItem.tags.map((tag) => options.tags[tag]?.label ?? tag);
 
   return (
     <li className={clsx('card shadow--md', styles.card)}>
@@ -69,38 +78,68 @@ export default function ShowcaseCard({item}: Props): React.JSX.Element {
               Source
             </Link>
           )}
+
+          {communityItem.website && (
+            <Link href={communityItem.website} className="button button--info button--sm">
+              Website
+            </Link>
+          )}
         </div>
 
         <p className={styles.description}>{communityItem.description}</p>
 
         <div className={styles.metaGrid}>
-          {communityItem.author && (
-            <p className={styles.metaRow}>
-              <span className={styles.metaLabel}>Author:</span>
-              <span>{communityItem.author}</span>
-            </p>
-          )}
+          <p className={styles.metaRow}>
+            <span className={styles.metaLabel}>ID:</span>
+            <span>{communityItem.id}</span>
+          </p>
 
-          {communityItem.offerType && (
-            <p className={styles.metaRow}>
-              <span className={styles.metaLabel}>Offer:</span>
-              <span>{formatOfferType(communityItem.offerType)}</span>
-            </p>
-          )}
+          <p className={styles.metaRow}>
+            <span className={styles.metaLabel}>Author:</span>
+            <span>{displayOrFallback(communityItem.author)}</span>
+          </p>
 
-          {communityItem.license && (
-            <p className={styles.metaRow}>
-              <span className={styles.metaLabel}>License:</span>
-              <span>{communityItem.license}</span>
-            </p>
-          )}
+          <p className={styles.metaRow}>
+            <span className={styles.metaLabel}>Offer Type:</span>
+            <span>{formatOfferType(communityItem.offerType ?? 'free')}</span>
+          </p>
 
-          {communityItem.status && (
-            <p className={styles.metaRow}>
-              <span className={styles.metaLabel}>Status:</span>
-              <span>{communityItem.status}</span>
-            </p>
-          )}
+          <p className={styles.metaRow}>
+            <span className={styles.metaLabel}>License:</span>
+            <span>{displayOrFallback(communityItem.license)}</span>
+          </p>
+
+          <p className={styles.metaRow}>
+            <span className={styles.metaLabel}>Status:</span>
+            <span>{statusLabel}</span>
+          </p>
+
+          <p className={styles.metaRow}>
+            <span className={styles.metaLabel}>Website:</span>
+            {communityItem.website ? (
+              <Link href={communityItem.website} className={styles.metaLink}>Open link</Link>
+            ) : (
+              <span>Not provided</span>
+            )}
+          </p>
+
+          <p className={styles.metaRow}>
+            <span className={styles.metaLabel}>Source:</span>
+            {communityItem.source ? (
+              <Link href={communityItem.source} className={styles.metaLink}>Open link</Link>
+            ) : (
+              <span>Not provided</span>
+            )}
+          </p>
+
+          <p className={styles.metaRow}>
+            <span className={styles.metaLabel}>Preview:</span>
+            {communityItem.preview ? (
+              <Link href={communityItem.preview} className={styles.metaLink}>Open link</Link>
+            ) : (
+              <span>Not provided</span>
+            )}
+          </p>
         </div>
 
         {communityItem.details && (
@@ -123,8 +162,8 @@ export default function ShowcaseCard({item}: Props): React.JSX.Element {
       </div>
 
       <ul className={styles.tags}>
-        {communityItem.tags.map((tag) => (
-          <li key={tag} className={styles.tagChip}>{tag}</li>
+        {tagLabels.map((tagLabel) => (
+          <li key={tagLabel} className={styles.tagChip}>{tagLabel}</li>
         ))}
       </ul>
     </li>
