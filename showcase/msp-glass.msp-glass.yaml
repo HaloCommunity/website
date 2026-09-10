@@ -1,0 +1,53 @@
+id: msp-glass.msp-glass
+name: MSP Glass
+description: A unified operations platform that connects HaloPSA with your wider MSP technology stack, giving your team one place to see, manage and report on operational data.
+details: |
+  ## What it does
+  
+  MSP Glass sits on top of HaloPSA and the rest of your MSP stack, bringing data from your PSA, RMM, security, backup, Microsoft 365, DNS, networking and other platforms into one unified operations console.
+  
+  Rather than replacing HaloPSA, MSP Glass extends it by giving your team a wider view of what's happening across the tools you already use.
+  
+  ### Key capabilities
+  
+  * **Customer and tenant visibility** across your connected platforms
+  * **Product coverage and drift detection** across RMM, AV/EDR, backup, Intune and other services
+  * **Alerts and operational issues** from multiple platforms in one place, with the ability to route issues into HaloPSA
+  * **Licence and billing reconciliation**, including comparing deployed licences against HaloPSA billing
+  * **DNS history and management** across supported DNS providers
+  * **Microsoft 365 visibility** through CIPP
+  * **Network and infrastructure visibility** across platforms such as UniFi, Meraki, SonicWall and Auvik
+  * **Client and internal reporting**, including Executive Summaries, Stack Snapshots and Product Coverage reports
+  * **Cross-platform workflows and automation** to help remediate issues identified by MSP Glass
+  
+  ### Setup
+  
+  Start by connecting HaloPSA and mapping your customers. You can then connect the other platforms used by your MSP and MSP Glass will bring their operational data together within your instance.
+  
+  MSP Glass supports 40+ integrations across PSA, RMM, security, backup, CSP, Microsoft 365, DNS, networking and MFA.
+  
+  Each MSP is provided with an independent logical environment for its data.
+  
+  ### HaloPSA integration
+  
+  HaloPSA can act as the system of record while MSP Glass provides the operational layer around it. MSP Glass can use HaloPSA customer, site, ticket and billing information alongside data from the rest of your technology stack.
+  
+  This allows MSPs to identify gaps, mismatches and operational issues that would otherwise require checking multiple vendor portals manually.
+  
+  ### Caveats
+  
+  MSP Glass does not replace HaloPSA, your RMM, or the other systems in your stack. It is designed to work alongside them.
+  
+  The depth of functionality available depends on the capabilities and API access provided by each connected platform.
+  
+website: https://mspglass.app/
+source: null
+author: MSP Glass
+preview: null
+tags:
+  - integration
+status: active
+offerType: commercial
+license: Proprietary
+npmPackages: []
+minimumVersion: null
