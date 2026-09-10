@@ -53,9 +53,28 @@ function displayOrFallback(value: string | null | undefined): string {
   return value && value.trim().length > 0 ? value : 'Not provided';
 }
 
+function normalizePreview(value: string | null | undefined): string | null {
+  if (!value) {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const lower = trimmed.toLowerCase();
+  if (lower === 'null' || lower === 'undefined' || lower === 'n/a') {
+    return null;
+  }
+
+  return trimmed;
+}
+
 export default function ShowcaseCard({item, options}: Props): React.JSX.Element {
   const communityItem = item as CommunityShowcaseItem;
-  const previewImage = communityItem.preview?.trim() ? communityItem.preview : DEFAULT_PREVIEW_IMAGE;
+  const normalizedPreview = normalizePreview(communityItem.preview);
+  const previewImage = normalizedPreview ?? DEFAULT_PREVIEW_IMAGE;
   const statusLabel =
     communityItem.status && options.statuses[communityItem.status]
       ? options.statuses[communityItem.status].label
@@ -68,10 +87,26 @@ export default function ShowcaseCard({item, options}: Props): React.JSX.Element 
         <div className={styles.previewBlock}>
           {communityItem.website ? (
             <Link href={communityItem.website} className={styles.previewLink}>
-              <img src={previewImage} alt={`${communityItem.name} preview`} className={styles.previewImage} />
+              <img
+                src={previewImage}
+                alt={`${communityItem.name} preview`}
+                className={styles.previewImage}
+                onError={(event) => {
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = DEFAULT_PREVIEW_IMAGE;
+                }}
+              />
             </Link>
           ) : (
-            <img src={previewImage} alt={`${communityItem.name} preview`} className={styles.previewImage} />
+            <img
+              src={previewImage}
+              alt={`${communityItem.name} preview`}
+              className={styles.previewImage}
+              onError={(event) => {
+                event.currentTarget.onerror = null;
+                event.currentTarget.src = DEFAULT_PREVIEW_IMAGE;
+              }}
+            />
           )}
           {!communityItem.website && <span className={styles.previewBadge}>No website link</span>}
         </div>
@@ -148,8 +183,8 @@ export default function ShowcaseCard({item, options}: Props): React.JSX.Element 
 
           <p className={styles.metaRow}>
             <span className={styles.metaLabel}>Preview:</span>
-            {communityItem.preview ? (
-              <Link href={communityItem.preview} className={styles.metaLink}>Open link</Link>
+            {normalizedPreview ? (
+              <Link href={normalizedPreview} className={styles.metaLink}>Open link</Link>
             ) : (
               <span>Not provided</span>
             )}
