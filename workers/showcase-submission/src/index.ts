@@ -20,6 +20,8 @@ type SubmissionPayload = {
   turnstileToken?: string;
 };
 
+const DEFAULT_PREVIEW_IMAGE = '/img/undraw_halopsa_integrate.svg';
+
 const ALLOWED_ORIGINS = new Set([
   'https://halopsa.community',
   'https://www.halopsa.community',
@@ -92,7 +94,7 @@ async function createSubmission(payload: SubmissionPayload, env: Env): Promise<{
 
   rawItem.website = normalizeUrl(rawItem.website);
   rawItem.source = normalizeUrl(rawItem.source);
-  rawItem.preview = normalizeUrl(rawItem.preview);
+  rawItem.preview = normalizeUrl(rawItem.preview) ?? DEFAULT_PREVIEW_IMAGE;
 
   const error = validateItem(rawItem);
   if (error) {

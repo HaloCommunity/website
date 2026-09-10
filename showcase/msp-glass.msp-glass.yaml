@@ -43,7 +43,7 @@ details: |
 website: https://mspglass.app/
 source: null
 author: MSP Glass
-preview: null
+preview: /img/undraw_halopsa_integrate.svg
 tags:
   - integration
 status: active
@@ -51,3 +51,4 @@ offerType: commercial
 license: Proprietary
 npmPackages: []
 minimumVersion: null
+
